@@ -1,15 +1,15 @@
 #include "question_answer_impl.h"
 
-#include <format>
 #include <fstream>
 
 #include "xn.pb.h"
+#include "notebook_utils.h"
 
 bool CQuestionAnswerImpl::open(const std::string & path)
 {
 	if (path.empty())
 	{
-		m_strErrorMsg = std::format("Input path is empty");
+		notebook_format_string(m_strErrorMsg, "Input path is empty");
 		return false;
 	}
 
@@ -19,14 +19,14 @@ bool CQuestionAnswerImpl::open(const std::string & path)
 	std::ifstream ifs(path, std::ios::binary);
 	if (!qa_list.ParseFromIstream(&ifs))
 	{
-		m_strErrorMsg = std::format("Parse {} failed", path);
+		notebook_format_string(m_strErrorMsg, "Parse %s failed", path.c_str());
 		ifs.close();
 		return false;
 	}
 
 	if (!group_list.ParseFromIstream(&ifs))
 	{
-		m_strErrorMsg = std::format("Parse {} failed", path);
+		notebook_format_string(m_strErrorMsg, "Parse %s failed", path.c_str());
 		ifs.close();
 		return false;
 	}
@@ -85,13 +85,13 @@ bool CQuestionAnswerImpl::deleteQuestion(const std::string & group, const std::s
 {
 	if (group != m_strGroup)
 	{
-		m_strErrorMsg = std::format("Invalid group name {}", group);
+		notebook_format_string(m_strErrorMsg, "Invalid group name %s", group.c_str());
 		return false;
 	}
 
 	if (m_vecQuestions.end() == std::find(m_vecQuestions.begin(), m_vecQuestions.end(), question))
 	{
-		m_strErrorMsg = std::format("Found question failed");
+		notebook_format_string(m_strErrorMsg, "Found question failed");
 		return false;
 	}
 
@@ -104,13 +104,13 @@ std::string CQuestionAnswerImpl::queryQuestion(const std::string & group, const 
 
 	if (group != m_strGroup)
 	{
-		m_strErrorMsg = std::format("Invalid group name {}", group);
+		notebook_format_string(m_strErrorMsg, "Invalid group name %s", group.c_str());
 		return answer;
 	}
 
 	if (m_vecQuestions.end() == std::find(m_vecQuestions.begin(), m_vecQuestions.end(), question))
 	{
-		m_strErrorMsg = std::format("Found question failed");
+		notebook_format_string(m_strErrorMsg, "Found question failed");
 		return answer;
 	}
 
@@ -118,7 +118,7 @@ std::string CQuestionAnswerImpl::queryQuestion(const std::string & group, const 
 	std::ifstream ifs(m_strPath, std::ios::binary);
 	if (!qa_list.ParseFromIstream(&ifs))
 	{
-		m_strErrorMsg = std::format("Parse {} failed", m_strPath);
+		notebook_format_string(m_strErrorMsg, "Parse %s failed", m_strPath.c_str());
 		ifs.close();
 		return answer;
 	}

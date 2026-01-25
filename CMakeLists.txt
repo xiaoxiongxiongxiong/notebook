@@ -3,7 +3,7 @@ project(notebook LANGUAGES CXX)
 
 include(qt.cmake)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -34,6 +34,7 @@ set(PROJECT_UI_SOURCES
 
 set(PROJECT_SOURCES
     src/xn.pb.cc
+    src/notebook_utils.cpp
     src/notebook_impl.cpp
     src/question_answer_impl.cpp
 )
