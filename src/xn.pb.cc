@@ -26,12 +26,45 @@ namespace _pbi = ::google::protobuf::internal;
 namespace _fl = ::google::protobuf::internal::field_layout;
 namespace xn {
 
+inline constexpr QuestionAnswerGroup::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : group_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        path_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR QuestionAnswerGroup::QuestionAnswerGroup(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct QuestionAnswerGroupDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR QuestionAnswerGroupDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~QuestionAnswerGroupDefaultTypeInternal() {}
+  union {
+    QuestionAnswerGroup _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 QuestionAnswerGroupDefaultTypeInternal _QuestionAnswerGroup_default_instance_;
+
 inline constexpr QuestionAnswer::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
       : question_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
         answer_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        group_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
         _cached_size_{0} {}
@@ -80,6 +113,31 @@ struct QuestionAnswerListDefaultTypeInternal {
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 QuestionAnswerListDefaultTypeInternal _QuestionAnswerList_default_instance_;
+
+inline constexpr QuestionAnswerGroupList::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : items_{},
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR QuestionAnswerGroupList::QuestionAnswerGroupList(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct QuestionAnswerGroupListDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR QuestionAnswerGroupListDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~QuestionAnswerGroupListDefaultTypeInternal() {}
+  union {
+    QuestionAnswerGroupList _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 QuestionAnswerGroupListDefaultTypeInternal _QuestionAnswerGroupList_default_instance_;
 }  // namespace xn
 static constexpr const ::_pb::EnumDescriptor**
     file_level_enum_descriptors_xn_2eproto = nullptr;
@@ -98,6 +156,7 @@ const ::uint32_t
         ~0u,  // no sizeof(Split)
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswer, _impl_.question_),
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswer, _impl_.answer_),
+        PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswer, _impl_.group_),
         ~0u,  // no _has_bits_
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerList, _internal_metadata_),
         ~0u,  // no _extensions_
@@ -107,35 +166,61 @@ const ::uint32_t
         ~0u,  // no _split_
         ~0u,  // no sizeof(Split)
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerList, _impl_.items_),
+        ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerGroup, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerGroup, _impl_.group_),
+        PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerGroup, _impl_.path_),
+        ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerGroupList, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerGroupList, _impl_.items_),
 };
 
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, -1, -1, sizeof(::xn::QuestionAnswer)},
-        {10, -1, -1, sizeof(::xn::QuestionAnswerList)},
+        {11, -1, -1, sizeof(::xn::QuestionAnswerList)},
+        {20, -1, -1, sizeof(::xn::QuestionAnswerGroup)},
+        {30, -1, -1, sizeof(::xn::QuestionAnswerGroupList)},
 };
 static const ::_pb::Message* const file_default_instances[] = {
     &::xn::_QuestionAnswer_default_instance_._instance,
     &::xn::_QuestionAnswerList_default_instance_._instance,
+    &::xn::_QuestionAnswerGroup_default_instance_._instance,
+    &::xn::_QuestionAnswerGroupList_default_instance_._instance,
 };
 const char descriptor_table_protodef_xn_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\010xn.proto\022\002xn\"2\n\016QuestionAnswer\022\020\n\010ques"
-    "tion\030\001 \001(\t\022\016\n\006answer\030\002 \001(\t\"7\n\022QuestionAn"
-    "swerList\022!\n\005items\030\001 \003(\0132\022.xn.QuestionAns"
-    "werb\006proto3"
+    "\n\010xn.proto\022\002xn\"A\n\016QuestionAnswer\022\020\n\010ques"
+    "tion\030\001 \001(\t\022\016\n\006answer\030\002 \001(\t\022\r\n\005group\030\003 \001("
+    "\t\"7\n\022QuestionAnswerList\022!\n\005items\030\001 \003(\0132\022"
+    ".xn.QuestionAnswer\"2\n\023QuestionAnswerGrou"
+    "p\022\r\n\005group\030\001 \001(\t\022\014\n\004path\030\002 \001(\t\"A\n\027Questi"
+    "onAnswerGroupList\022&\n\005items\030\001 \003(\0132\027.xn.Qu"
+    "estionAnswerGroupb\006proto3"
 };
 static ::absl::once_flag descriptor_table_xn_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_xn_2eproto = {
     false,
     false,
-    131,
+    265,
     descriptor_table_protodef_xn_2eproto,
     "xn.proto",
     &descriptor_table_xn_2eproto_once,
     nullptr,
     0,
-    2,
+    4,
     schemas,
     file_default_instances,
     TableStruct_xn_2eproto::offsets,
@@ -163,6 +248,7 @@ inline PROTOBUF_NDEBUG_INLINE QuestionAnswer::Impl_::Impl_(
     const Impl_& from, const ::xn::QuestionAnswer& from_msg)
       : question_(arena, from.question_),
         answer_(arena, from.answer_),
+        group_(arena, from.group_),
         _cached_size_{0} {}
 
 QuestionAnswer::QuestionAnswer(
@@ -186,6 +272,7 @@ inline PROTOBUF_NDEBUG_INLINE QuestionAnswer::Impl_::Impl_(
     ::google::protobuf::Arena* arena)
       : question_(arena),
         answer_(arena),
+        group_(arena),
         _cached_size_{0} {}
 
 inline void QuestionAnswer::SharedCtor(::_pb::Arena* arena) {
@@ -201,6 +288,7 @@ inline void QuestionAnswer::SharedDtor(MessageLite& self) {
   ABSL_DCHECK(this_.GetArena() == nullptr);
   this_._impl_.question_.Destroy();
   this_._impl_.answer_.Destroy();
+  this_._impl_.group_.Destroy();
   this_._impl_.~Impl_();
 }
 
@@ -240,15 +328,15 @@ const ::google::protobuf::internal::ClassData* QuestionAnswer::GetClassData() co
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<1, 2, 0, 40, 2> QuestionAnswer::_table_ = {
+const ::_pbi::TcParseTable<2, 3, 0, 45, 2> QuestionAnswer::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
-    2, 8,  // max_field_number, fast_idx_mask
+    3, 24,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967292,  // skipmap
+    4294967288,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    2,  // num_field_entries
+    3,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     _class_data_.base(),
@@ -258,12 +346,16 @@ const ::_pbi::TcParseTable<1, 2, 0, 40, 2> QuestionAnswer::_table_ = {
     ::_pbi::TcParser::GetTable<::xn::QuestionAnswer>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // string answer = 2;
-    {::_pbi::TcParser::FastUS1,
-     {18, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswer, _impl_.answer_)}},
+    {::_pbi::TcParser::MiniParse, {}},
     // string question = 1;
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswer, _impl_.question_)}},
+    // string answer = 2;
+    {::_pbi::TcParser::FastUS1,
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswer, _impl_.answer_)}},
+    // string group = 3;
+    {::_pbi::TcParser::FastUS1,
+     {26, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswer, _impl_.group_)}},
   }}, {{
     65535, 65535
   }}, {{
@@ -273,13 +365,17 @@ const ::_pbi::TcParseTable<1, 2, 0, 40, 2> QuestionAnswer::_table_ = {
     // string answer = 2;
     {PROTOBUF_FIELD_OFFSET(QuestionAnswer, _impl_.answer_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string group = 3;
+    {PROTOBUF_FIELD_OFFSET(QuestionAnswer, _impl_.group_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
   }},
   // no aux_entries
   {{
-    "\21\10\6\0\0\0\0\0"
+    "\21\10\6\5\0\0\0\0"
     "xn.QuestionAnswer"
     "question"
     "answer"
+    "group"
   }},
 };
 
@@ -292,6 +388,7 @@ PROTOBUF_NOINLINE void QuestionAnswer::Clear() {
 
   _impl_.question_.ClearToEmpty();
   _impl_.answer_.ClearToEmpty();
+  _impl_.group_.ClearToEmpty();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
 
@@ -324,6 +421,14 @@ PROTOBUF_NOINLINE void QuestionAnswer::Clear() {
             ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
                 _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "xn.QuestionAnswer.answer");
             target = stream->WriteStringMaybeAliased(2, _s, target);
+          }
+
+          // string group = 3;
+          if (!this_._internal_group().empty()) {
+            const std::string& _s = this_._internal_group();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "xn.QuestionAnswer.group");
+            target = stream->WriteStringMaybeAliased(3, _s, target);
           }
 
           if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
@@ -361,6 +466,11 @@ PROTOBUF_NOINLINE void QuestionAnswer::Clear() {
               total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
                                               this_._internal_answer());
             }
+            // string group = 3;
+            if (!this_._internal_group().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_group());
+            }
           }
           return this_.MaybeComputeUnknownFieldsSize(total_size,
                                                      &this_._impl_._cached_size_);
@@ -380,6 +490,9 @@ void QuestionAnswer::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::
   if (!from._internal_answer().empty()) {
     _this->_internal_set_answer(from._internal_answer());
   }
+  if (!from._internal_group().empty()) {
+    _this->_internal_set_group(from._internal_group());
+  }
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -398,6 +511,7 @@ void QuestionAnswer::InternalSwap(QuestionAnswer* PROTOBUF_RESTRICT other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.question_, &other->_impl_.question_, arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.answer_, &other->_impl_.answer_, arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.group_, &other->_impl_.group_, arena);
 }
 
 ::google::protobuf::Metadata QuestionAnswer::GetMetadata() const {
@@ -643,6 +757,508 @@ void QuestionAnswerList::InternalSwap(QuestionAnswerList* PROTOBUF_RESTRICT othe
 }
 
 ::google::protobuf::Metadata QuestionAnswerList::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class QuestionAnswerGroup::_Internal {
+ public:
+};
+
+QuestionAnswerGroup::QuestionAnswerGroup(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:xn.QuestionAnswerGroup)
+}
+inline PROTOBUF_NDEBUG_INLINE QuestionAnswerGroup::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
+    const Impl_& from, const ::xn::QuestionAnswerGroup& from_msg)
+      : group_(arena, from.group_),
+        path_(arena, from.path_),
+        _cached_size_{0} {}
+
+QuestionAnswerGroup::QuestionAnswerGroup(
+    ::google::protobuf::Arena* arena,
+    const QuestionAnswerGroup& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  QuestionAnswerGroup* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+
+  // @@protoc_insertion_point(copy_constructor:xn.QuestionAnswerGroup)
+}
+inline PROTOBUF_NDEBUG_INLINE QuestionAnswerGroup::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : group_(arena),
+        path_(arena),
+        _cached_size_{0} {}
+
+inline void QuestionAnswerGroup::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+}
+QuestionAnswerGroup::~QuestionAnswerGroup() {
+  // @@protoc_insertion_point(destructor:xn.QuestionAnswerGroup)
+  SharedDtor(*this);
+}
+inline void QuestionAnswerGroup::SharedDtor(MessageLite& self) {
+  QuestionAnswerGroup& this_ = static_cast<QuestionAnswerGroup&>(self);
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.group_.Destroy();
+  this_._impl_.path_.Destroy();
+  this_._impl_.~Impl_();
+}
+
+inline void* QuestionAnswerGroup::PlacementNew_(const void*, void* mem,
+                                        ::google::protobuf::Arena* arena) {
+  return ::new (mem) QuestionAnswerGroup(arena);
+}
+constexpr auto QuestionAnswerGroup::InternalNewImpl_() {
+  return ::google::protobuf::internal::MessageCreator::CopyInit(sizeof(QuestionAnswerGroup),
+                                            alignof(QuestionAnswerGroup));
+}
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::internal::ClassDataFull QuestionAnswerGroup::_class_data_ = {
+    ::google::protobuf::internal::ClassData{
+        &_QuestionAnswerGroup_default_instance_._instance,
+        &_table_.header,
+        nullptr,  // OnDemandRegisterArenaDtor
+        nullptr,  // IsInitialized
+        &QuestionAnswerGroup::MergeImpl,
+        ::google::protobuf::Message::GetNewImpl<QuestionAnswerGroup>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        &QuestionAnswerGroup::SharedDtor,
+        ::google::protobuf::Message::GetClearImpl<QuestionAnswerGroup>(), &QuestionAnswerGroup::ByteSizeLong,
+            &QuestionAnswerGroup::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+        PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_._cached_size_),
+        false,
+    },
+    &QuestionAnswerGroup::kDescriptorMethods,
+    &descriptor_table_xn_2eproto,
+    nullptr,  // tracker
+};
+const ::google::protobuf::internal::ClassData* QuestionAnswerGroup::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<1, 2, 0, 40, 2> QuestionAnswerGroup::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    2, 8,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967292,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    2,  // num_field_entries
+    0,  // num_aux_entries
+    offsetof(decltype(_table_), field_names),  // no aux_entries
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::xn::QuestionAnswerGroup>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    // string path = 2;
+    {::_pbi::TcParser::FastUS1,
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_.path_)}},
+    // string group = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_.group_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // string group = 1;
+    {PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_.group_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string path = 2;
+    {PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_.path_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+  }},
+  // no aux_entries
+  {{
+    "\26\5\4\0\0\0\0\0"
+    "xn.QuestionAnswerGroup"
+    "group"
+    "path"
+  }},
+};
+
+PROTOBUF_NOINLINE void QuestionAnswerGroup::Clear() {
+// @@protoc_insertion_point(message_clear_start:xn.QuestionAnswerGroup)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.group_.ClearToEmpty();
+  _impl_.path_.ClearToEmpty();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* QuestionAnswerGroup::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const QuestionAnswerGroup& this_ = static_cast<const QuestionAnswerGroup&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* QuestionAnswerGroup::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const QuestionAnswerGroup& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:xn.QuestionAnswerGroup)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // string group = 1;
+          if (!this_._internal_group().empty()) {
+            const std::string& _s = this_._internal_group();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "xn.QuestionAnswerGroup.group");
+            target = stream->WriteStringMaybeAliased(1, _s, target);
+          }
+
+          // string path = 2;
+          if (!this_._internal_path().empty()) {
+            const std::string& _s = this_._internal_path();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "xn.QuestionAnswerGroup.path");
+            target = stream->WriteStringMaybeAliased(2, _s, target);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:xn.QuestionAnswerGroup)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t QuestionAnswerGroup::ByteSizeLong(const MessageLite& base) {
+          const QuestionAnswerGroup& this_ = static_cast<const QuestionAnswerGroup&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t QuestionAnswerGroup::ByteSizeLong() const {
+          const QuestionAnswerGroup& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:xn.QuestionAnswerGroup)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+          ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+           {
+            // string group = 1;
+            if (!this_._internal_group().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_group());
+            }
+            // string path = 2;
+            if (!this_._internal_path().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_path());
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void QuestionAnswerGroup::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<QuestionAnswerGroup*>(&to_msg);
+  auto& from = static_cast<const QuestionAnswerGroup&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:xn.QuestionAnswerGroup)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_group().empty()) {
+    _this->_internal_set_group(from._internal_group());
+  }
+  if (!from._internal_path().empty()) {
+    _this->_internal_set_path(from._internal_path());
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void QuestionAnswerGroup::CopyFrom(const QuestionAnswerGroup& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:xn.QuestionAnswerGroup)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void QuestionAnswerGroup::InternalSwap(QuestionAnswerGroup* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  auto* arena = GetArena();
+  ABSL_DCHECK_EQ(arena, other->GetArena());
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.group_, &other->_impl_.group_, arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.path_, &other->_impl_.path_, arena);
+}
+
+::google::protobuf::Metadata QuestionAnswerGroup::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class QuestionAnswerGroupList::_Internal {
+ public:
+};
+
+QuestionAnswerGroupList::QuestionAnswerGroupList(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:xn.QuestionAnswerGroupList)
+}
+inline PROTOBUF_NDEBUG_INLINE QuestionAnswerGroupList::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
+    const Impl_& from, const ::xn::QuestionAnswerGroupList& from_msg)
+      : items_{visibility, arena, from.items_},
+        _cached_size_{0} {}
+
+QuestionAnswerGroupList::QuestionAnswerGroupList(
+    ::google::protobuf::Arena* arena,
+    const QuestionAnswerGroupList& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  QuestionAnswerGroupList* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+
+  // @@protoc_insertion_point(copy_constructor:xn.QuestionAnswerGroupList)
+}
+inline PROTOBUF_NDEBUG_INLINE QuestionAnswerGroupList::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : items_{visibility, arena},
+        _cached_size_{0} {}
+
+inline void QuestionAnswerGroupList::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+}
+QuestionAnswerGroupList::~QuestionAnswerGroupList() {
+  // @@protoc_insertion_point(destructor:xn.QuestionAnswerGroupList)
+  SharedDtor(*this);
+}
+inline void QuestionAnswerGroupList::SharedDtor(MessageLite& self) {
+  QuestionAnswerGroupList& this_ = static_cast<QuestionAnswerGroupList&>(self);
+  this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.~Impl_();
+}
+
+inline void* QuestionAnswerGroupList::PlacementNew_(const void*, void* mem,
+                                        ::google::protobuf::Arena* arena) {
+  return ::new (mem) QuestionAnswerGroupList(arena);
+}
+constexpr auto QuestionAnswerGroupList::InternalNewImpl_() {
+  constexpr auto arena_bits = ::google::protobuf::internal::EncodePlacementArenaOffsets({
+      PROTOBUF_FIELD_OFFSET(QuestionAnswerGroupList, _impl_.items_) +
+          decltype(QuestionAnswerGroupList::_impl_.items_)::
+              InternalGetArenaOffset(
+                  ::google::protobuf::Message::internal_visibility()),
+  });
+  if (arena_bits.has_value()) {
+    return ::google::protobuf::internal::MessageCreator::ZeroInit(
+        sizeof(QuestionAnswerGroupList), alignof(QuestionAnswerGroupList), *arena_bits);
+  } else {
+    return ::google::protobuf::internal::MessageCreator(&QuestionAnswerGroupList::PlacementNew_,
+                                 sizeof(QuestionAnswerGroupList),
+                                 alignof(QuestionAnswerGroupList));
+  }
+}
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::internal::ClassDataFull QuestionAnswerGroupList::_class_data_ = {
+    ::google::protobuf::internal::ClassData{
+        &_QuestionAnswerGroupList_default_instance_._instance,
+        &_table_.header,
+        nullptr,  // OnDemandRegisterArenaDtor
+        nullptr,  // IsInitialized
+        &QuestionAnswerGroupList::MergeImpl,
+        ::google::protobuf::Message::GetNewImpl<QuestionAnswerGroupList>(),
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        &QuestionAnswerGroupList::SharedDtor,
+        ::google::protobuf::Message::GetClearImpl<QuestionAnswerGroupList>(), &QuestionAnswerGroupList::ByteSizeLong,
+            &QuestionAnswerGroupList::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+        PROTOBUF_FIELD_OFFSET(QuestionAnswerGroupList, _impl_._cached_size_),
+        false,
+    },
+    &QuestionAnswerGroupList::kDescriptorMethods,
+    &descriptor_table_xn_2eproto,
+    nullptr,  // tracker
+};
+const ::google::protobuf::internal::ClassData* QuestionAnswerGroupList::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<0, 1, 1, 0, 2> QuestionAnswerGroupList::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    1, 0,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967294,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    1,  // num_field_entries
+    1,  // num_aux_entries
+    offsetof(decltype(_table_), aux_entries),
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::xn::QuestionAnswerGroupList>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    // repeated .xn.QuestionAnswerGroup items = 1;
+    {::_pbi::TcParser::FastMtR1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswerGroupList, _impl_.items_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // repeated .xn.QuestionAnswerGroup items = 1;
+    {PROTOBUF_FIELD_OFFSET(QuestionAnswerGroupList, _impl_.items_), 0, 0,
+    (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+  }}, {{
+    {::_pbi::TcParser::GetTable<::xn::QuestionAnswerGroup>()},
+  }}, {{
+  }},
+};
+
+PROTOBUF_NOINLINE void QuestionAnswerGroupList::Clear() {
+// @@protoc_insertion_point(message_clear_start:xn.QuestionAnswerGroupList)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.items_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* QuestionAnswerGroupList::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const QuestionAnswerGroupList& this_ = static_cast<const QuestionAnswerGroupList&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* QuestionAnswerGroupList::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const QuestionAnswerGroupList& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:xn.QuestionAnswerGroupList)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // repeated .xn.QuestionAnswerGroup items = 1;
+          for (unsigned i = 0, n = static_cast<unsigned>(
+                                   this_._internal_items_size());
+               i < n; i++) {
+            const auto& repfield = this_._internal_items().Get(i);
+            target =
+                ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+                    1, repfield, repfield.GetCachedSize(),
+                    target, stream);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:xn.QuestionAnswerGroupList)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t QuestionAnswerGroupList::ByteSizeLong(const MessageLite& base) {
+          const QuestionAnswerGroupList& this_ = static_cast<const QuestionAnswerGroupList&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t QuestionAnswerGroupList::ByteSizeLong() const {
+          const QuestionAnswerGroupList& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:xn.QuestionAnswerGroupList)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+          ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+           {
+            // repeated .xn.QuestionAnswerGroup items = 1;
+            {
+              total_size += 1UL * this_._internal_items_size();
+              for (const auto& msg : this_._internal_items()) {
+                total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+              }
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void QuestionAnswerGroupList::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<QuestionAnswerGroupList*>(&to_msg);
+  auto& from = static_cast<const QuestionAnswerGroupList&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:xn.QuestionAnswerGroupList)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_internal_mutable_items()->MergeFrom(
+      from._internal_items());
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void QuestionAnswerGroupList::CopyFrom(const QuestionAnswerGroupList& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:xn.QuestionAnswerGroupList)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void QuestionAnswerGroupList::InternalSwap(QuestionAnswerGroupList* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.items_.InternalSwap(&other->_impl_.items_);
+}
+
+::google::protobuf::Metadata QuestionAnswerGroupList::GetMetadata() const {
   return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
 }
 // @@protoc_insertion_point(namespace_scope)

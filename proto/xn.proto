@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package xn;
+
+message QuestionAnswer {
+    string question = 1;
+	string answer = 2;
+	string group = 3;
+}
+
+message QuestionAnswerList {
+    repeated QuestionAnswer items = 1;
+}
+
+message QuestionAnswerGroup {
+    string group = 1;
+	string path = 2;
+}
+
+message QuestionAnswerGroupList {
+    repeated QuestionAnswerGroup items = 1;
+}
+
