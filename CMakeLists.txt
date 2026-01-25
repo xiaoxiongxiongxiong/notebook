@@ -39,7 +39,13 @@ set(PROJECT_SOURCES
     src/question_answer_impl.cpp
 )
 
-qt_add_executable(${PROJECT_NAME} ${PROJECT_UI_SOURCES} ${PROJECT_SOURCES})
+qt5_add_resources(QRC_FILES "resources/notebook.qrc")
+
+qt_add_executable(${PROJECT_NAME} 
+                  ${PROJECT_UI_SOURCES} 
+                  ${PROJECT_SOURCES}
+                  ${QRC_FILES}
+                  "resources/notebook.rc")
 
 set_target_properties(${PROJECT_NAME}
     PROPERTIES

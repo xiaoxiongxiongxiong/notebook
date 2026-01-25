@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/notebook">
+        <file>res/notebook.ico</file>
+    </qresource>
+</RCC>
