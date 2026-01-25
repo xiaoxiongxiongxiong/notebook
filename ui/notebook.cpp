@@ -1,4 +1,4 @@
-#include "notebook.h"
+﻿#include "notebook.h"
 
 #include <QHBoxLayout>
 #include <QResizeEvent>
@@ -6,15 +6,23 @@
 #include <QStyleFactory>
 #include <QMenu>
 
+#include "group_dashboard.h"
+#include "question_dashboard.h"
+
 notebook::notebook(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
 
+    connect(ui.m_btnLast, SIGNAL(clicked()), this, SLOT(onBtnClickedLastQuestion()));
+    connect(ui.m_btnCtrl, SIGNAL(clicked()), this, SLOT(onBtnClickedShowAnswer()));
+    connect(ui.m_btnNext, SIGNAL(clicked()), this, SLOT(onBtnClickedNextQuestion()));
+
     ui.m_treeQuestionBank->setStyle(QStyleFactory::create("windows"));
     m_ptrQuestion = new QTreeWidgetItem(ui.m_treeQuestionBank);
     m_ptrQuestion->setText(0, QStringLiteral("题库"));
     m_ptrQuestion->setData(0, Qt::ForegroundRole, QBrush(Qt::blue));
+    m_ptrQuestion->setData(0, Qt::UserRole, QVariant::fromValue(true));
 
     m_ptrMenu = new QMenu(ui.m_treeQuestionBank);
     QAction * add_group = new QAction(QStringLiteral("添加分组"));
@@ -71,12 +79,44 @@ notebook::~notebook()
     }
 }
 
+void notebook::onBtnClickedLastQuestion()
+{
+
+}
+
+void notebook::onBtnClickedNextQuestion()
+{
+
+}
+
+void notebook::onBtnClickedShowAnswer()
+{
+
+}
+
 void notebook::onBtnClickedAddGroup()
 {
+    group_dashboard gd;
+    int res = gd.exec();
+    if (QDialog::Accepted != res)
+        return;
+
+    auto * item = ui.m_treeQuestionBank->currentItem();
+    QTreeWidgetItem * child = new QTreeWidgetItem(item);
+    child->setText(0, gd.getGroupName());
+    child->setData(0, Qt::UserRole, QVariant::fromValue(true));
+    item->setExpanded(true);
 }
 
 void notebook::onBtnClickedDeleteGroup()
 {
+    auto * item = ui.m_treeQuestionBank->currentItem();
+    auto * parent_item = item->parent();
+    if (nullptr == parent_item)
+        return;
+
+    item->takeChildren();
+    parent_item->removeChild(item);
 }
 
 void notebook::onBtnClickedMoveGroup()
@@ -85,14 +125,40 @@ void notebook::onBtnClickedMoveGroup()
 
 void notebook::onBtnClickedModifyGroup()
 {
+    group_dashboard gd;
+    int res = gd.exec();
+    if (QDialog::Accepted != res)
+        return;
+
+    auto * item = ui.m_treeQuestionBank->currentItem();
+    item->setText(0, gd.getGroupName());
+    item->setData(0, Qt::UserRole, QVariant::fromValue(true));
+    item->setExpanded(true);
 }
 
 void notebook::onBtnClickedAddQuestion()
 {
+    question_dashboard qd;
+    int res = qd.exec();
+    if (QDialog::Accepted != res)
+        return;
+
+    auto * item = ui.m_treeQuestionBank->currentItem();
+    QTreeWidgetItem * child = new QTreeWidgetItem(item);
+    child->setText(0, "frueiuruofiu");
+    child->setData(0, Qt::UserRole, QVariant::fromValue(false));
+    item->setExpanded(true);
 }
 
 void notebook::onBtnClickedDeleteQuestion()
 {
+    auto * item = ui.m_treeQuestionBank->currentItem();
+    auto * parent_item = item->parent();
+    if (nullptr == parent_item)
+        return;
+
+    item->takeChildren();
+    parent_item->removeChild(item);
 }
 
 void notebook::onBtnClickedMoveQuestion()
@@ -109,5 +175,14 @@ void notebook::onTreeWidgetItemClicked(QTreeWidgetItem * item, int col)
         return;
     if (Qt::RightButton != qApp->mouseButtons())
         return;
+
+    auto val = item->data(0, Qt::UserRole);
+    if (!val.isValid())
+        return;
+
+    QList<QAction *> actions = m_ptrMenu->actions();
+    for (int i = 0; i < 6; i++)
+        actions[i]->setVisible(val.toBool());
+
     m_ptrMenu->exec(QCursor::pos());
 }

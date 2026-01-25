@@ -12,6 +12,10 @@ public:
     ~notebook();
 
 public slots:
+    void onBtnClickedLastQuestion();
+    void onBtnClickedNextQuestion();
+    void onBtnClickedShowAnswer();
+
     // 添加分组
     void onBtnClickedAddGroup();
     // 删除分组
