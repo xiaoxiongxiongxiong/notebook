@@ -104,6 +104,7 @@ void notebook::onBtnClickedAddGroup()
     auto * item = ui.m_treeQuestionBank->currentItem();
     QTreeWidgetItem * child = new QTreeWidgetItem(item);
     child->setText(0, gd.getGroupName());
+    child->setToolTip(0, gd.getGroupName());
     child->setData(0, Qt::UserRole, QVariant::fromValue(true));
     item->setExpanded(true);
 }
@@ -125,13 +126,15 @@ void notebook::onBtnClickedMoveGroup()
 
 void notebook::onBtnClickedModifyGroup()
 {
+    auto * item = ui.m_treeQuestionBank->currentItem();
     group_dashboard gd;
+    gd.setGroupName(item->text(0));
     int res = gd.exec();
     if (QDialog::Accepted != res)
         return;
 
-    auto * item = ui.m_treeQuestionBank->currentItem();
     item->setText(0, gd.getGroupName());
+    item->setToolTip(0, gd.getGroupName());
     item->setData(0, Qt::UserRole, QVariant::fromValue(true));
     item->setExpanded(true);
 }
@@ -145,7 +148,8 @@ void notebook::onBtnClickedAddQuestion()
 
     auto * item = ui.m_treeQuestionBank->currentItem();
     QTreeWidgetItem * child = new QTreeWidgetItem(item);
-    child->setText(0, "frueiuruofiu");
+    child->setText(0, qd.getQuestion());
+    child->setToolTip(0, qd.getQuestion());
     child->setData(0, Qt::UserRole, QVariant::fromValue(false));
     item->setExpanded(true);
 }
@@ -167,17 +171,39 @@ void notebook::onBtnClickedMoveQuestion()
 
 void notebook::onBtnClickedModifyQuestion()
 {
+    auto * item = ui.m_treeQuestionBank->currentItem();
+    question_dashboard qd;
+    qd.setQuestion(item->text(0));
+    int res = qd.exec();
+    if (QDialog::Accepted != res)
+        return;
+
+    item->setText(0, qd.getQuestion());
+    item->setToolTip(0, qd.getQuestion());
 }
 
 void notebook::onTreeWidgetItemClicked(QTreeWidgetItem * item, int col)
 {
     if (nullptr == m_ptrMenu)
         return;
-    if (Qt::RightButton != qApp->mouseButtons())
-        return;
 
     auto val = item->data(0, Qt::UserRole);
     if (!val.isValid())
+        return;
+
+    if (Qt::LeftButton == qApp->mouseButtons())
+    {
+        if (!val.toBool())
+            ui.m_edtQuestion->setText(item->text(0));
+        else
+        {
+            ui.m_edtQuestion->clear();
+            ui.m_edtAnswer->clear();
+        }
+        return;
+    }
+
+    if (Qt::RightButton != qApp->mouseButtons())
         return;
 
     QList<QAction *> actions = m_ptrMenu->actions();
