@@ -34,6 +34,9 @@ inline constexpr QuestionAnswerGroup::Impl_::Impl_(
         path_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
+        id_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
         _cached_size_{0} {}
 
 template <typename>
@@ -65,6 +68,9 @@ inline constexpr QuestionAnswer::Impl_::Impl_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
         group_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
+        id_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
         _cached_size_{0} {}
@@ -157,6 +163,7 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswer, _impl_.question_),
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswer, _impl_.answer_),
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswer, _impl_.group_),
+        PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswer, _impl_.id_),
         ~0u,  // no _has_bits_
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerList, _internal_metadata_),
         ~0u,  // no _extensions_
@@ -176,6 +183,7 @@ const ::uint32_t
         ~0u,  // no sizeof(Split)
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerGroup, _impl_.group_),
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerGroup, _impl_.path_),
+        PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerGroup, _impl_.id_),
         ~0u,  // no _has_bits_
         PROTOBUF_FIELD_OFFSET(::xn::QuestionAnswerGroupList, _internal_metadata_),
         ~0u,  // no _extensions_
@@ -190,9 +198,9 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, -1, -1, sizeof(::xn::QuestionAnswer)},
-        {11, -1, -1, sizeof(::xn::QuestionAnswerList)},
-        {20, -1, -1, sizeof(::xn::QuestionAnswerGroup)},
-        {30, -1, -1, sizeof(::xn::QuestionAnswerGroupList)},
+        {12, -1, -1, sizeof(::xn::QuestionAnswerList)},
+        {21, -1, -1, sizeof(::xn::QuestionAnswerGroup)},
+        {32, -1, -1, sizeof(::xn::QuestionAnswerGroupList)},
 };
 static const ::_pb::Message* const file_default_instances[] = {
     &::xn::_QuestionAnswer_default_instance_._instance,
@@ -202,19 +210,20 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 const char descriptor_table_protodef_xn_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\010xn.proto\022\002xn\"A\n\016QuestionAnswer\022\020\n\010ques"
+    "\n\010xn.proto\022\002xn\"M\n\016QuestionAnswer\022\020\n\010ques"
     "tion\030\001 \001(\t\022\016\n\006answer\030\002 \001(\t\022\r\n\005group\030\003 \001("
-    "\t\"7\n\022QuestionAnswerList\022!\n\005items\030\001 \003(\0132\022"
-    ".xn.QuestionAnswer\"2\n\023QuestionAnswerGrou"
-    "p\022\r\n\005group\030\001 \001(\t\022\014\n\004path\030\002 \001(\t\"A\n\027Questi"
-    "onAnswerGroupList\022&\n\005items\030\001 \003(\0132\027.xn.Qu"
-    "estionAnswerGroupb\006proto3"
+    "\t\022\n\n\002id\030\004 \001(\t\"7\n\022QuestionAnswerList\022!\n\005i"
+    "tems\030\001 \003(\0132\022.xn.QuestionAnswer\">\n\023Questi"
+    "onAnswerGroup\022\r\n\005group\030\001 \001(\t\022\014\n\004path\030\002 \001"
+    "(\t\022\n\n\002id\030\003 \001(\t\"A\n\027QuestionAnswerGroupLis"
+    "t\022&\n\005items\030\001 \003(\0132\027.xn.QuestionAnswerGrou"
+    "pb\006proto3"
 };
 static ::absl::once_flag descriptor_table_xn_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_xn_2eproto = {
     false,
     false,
-    265,
+    289,
     descriptor_table_protodef_xn_2eproto,
     "xn.proto",
     &descriptor_table_xn_2eproto_once,
@@ -249,6 +258,7 @@ inline PROTOBUF_NDEBUG_INLINE QuestionAnswer::Impl_::Impl_(
       : question_(arena, from.question_),
         answer_(arena, from.answer_),
         group_(arena, from.group_),
+        id_(arena, from.id_),
         _cached_size_{0} {}
 
 QuestionAnswer::QuestionAnswer(
@@ -273,6 +283,7 @@ inline PROTOBUF_NDEBUG_INLINE QuestionAnswer::Impl_::Impl_(
       : question_(arena),
         answer_(arena),
         group_(arena),
+        id_(arena),
         _cached_size_{0} {}
 
 inline void QuestionAnswer::SharedCtor(::_pb::Arena* arena) {
@@ -289,6 +300,7 @@ inline void QuestionAnswer::SharedDtor(MessageLite& self) {
   this_._impl_.question_.Destroy();
   this_._impl_.answer_.Destroy();
   this_._impl_.group_.Destroy();
+  this_._impl_.id_.Destroy();
   this_._impl_.~Impl_();
 }
 
@@ -328,15 +340,15 @@ const ::google::protobuf::internal::ClassData* QuestionAnswer::GetClassData() co
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<2, 3, 0, 45, 2> QuestionAnswer::_table_ = {
+const ::_pbi::TcParseTable<2, 4, 0, 47, 2> QuestionAnswer::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
-    3, 24,  // max_field_number, fast_idx_mask
+    4, 24,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967288,  // skipmap
+    4294967280,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    3,  // num_field_entries
+    4,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     _class_data_.base(),
@@ -346,7 +358,9 @@ const ::_pbi::TcParseTable<2, 3, 0, 45, 2> QuestionAnswer::_table_ = {
     ::_pbi::TcParser::GetTable<::xn::QuestionAnswer>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    {::_pbi::TcParser::MiniParse, {}},
+    // string id = 4;
+    {::_pbi::TcParser::FastUS1,
+     {34, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswer, _impl_.id_)}},
     // string question = 1;
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswer, _impl_.question_)}},
@@ -368,14 +382,18 @@ const ::_pbi::TcParseTable<2, 3, 0, 45, 2> QuestionAnswer::_table_ = {
     // string group = 3;
     {PROTOBUF_FIELD_OFFSET(QuestionAnswer, _impl_.group_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string id = 4;
+    {PROTOBUF_FIELD_OFFSET(QuestionAnswer, _impl_.id_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
   }},
   // no aux_entries
   {{
-    "\21\10\6\5\0\0\0\0"
+    "\21\10\6\5\2\0\0\0"
     "xn.QuestionAnswer"
     "question"
     "answer"
     "group"
+    "id"
   }},
 };
 
@@ -389,6 +407,7 @@ PROTOBUF_NOINLINE void QuestionAnswer::Clear() {
   _impl_.question_.ClearToEmpty();
   _impl_.answer_.ClearToEmpty();
   _impl_.group_.ClearToEmpty();
+  _impl_.id_.ClearToEmpty();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
 
@@ -431,6 +450,14 @@ PROTOBUF_NOINLINE void QuestionAnswer::Clear() {
             target = stream->WriteStringMaybeAliased(3, _s, target);
           }
 
+          // string id = 4;
+          if (!this_._internal_id().empty()) {
+            const std::string& _s = this_._internal_id();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "xn.QuestionAnswer.id");
+            target = stream->WriteStringMaybeAliased(4, _s, target);
+          }
+
           if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
             target =
                 ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -471,6 +498,11 @@ PROTOBUF_NOINLINE void QuestionAnswer::Clear() {
               total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
                                               this_._internal_group());
             }
+            // string id = 4;
+            if (!this_._internal_id().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_id());
+            }
           }
           return this_.MaybeComputeUnknownFieldsSize(total_size,
                                                      &this_._impl_._cached_size_);
@@ -493,6 +525,9 @@ void QuestionAnswer::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::
   if (!from._internal_group().empty()) {
     _this->_internal_set_group(from._internal_group());
   }
+  if (!from._internal_id().empty()) {
+    _this->_internal_set_id(from._internal_id());
+  }
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -512,6 +547,7 @@ void QuestionAnswer::InternalSwap(QuestionAnswer* PROTOBUF_RESTRICT other) {
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.question_, &other->_impl_.question_, arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.answer_, &other->_impl_.answer_, arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.group_, &other->_impl_.group_, arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.id_, &other->_impl_.id_, arena);
 }
 
 ::google::protobuf::Metadata QuestionAnswer::GetMetadata() const {
@@ -779,6 +815,7 @@ inline PROTOBUF_NDEBUG_INLINE QuestionAnswerGroup::Impl_::Impl_(
     const Impl_& from, const ::xn::QuestionAnswerGroup& from_msg)
       : group_(arena, from.group_),
         path_(arena, from.path_),
+        id_(arena, from.id_),
         _cached_size_{0} {}
 
 QuestionAnswerGroup::QuestionAnswerGroup(
@@ -802,6 +839,7 @@ inline PROTOBUF_NDEBUG_INLINE QuestionAnswerGroup::Impl_::Impl_(
     ::google::protobuf::Arena* arena)
       : group_(arena),
         path_(arena),
+        id_(arena),
         _cached_size_{0} {}
 
 inline void QuestionAnswerGroup::SharedCtor(::_pb::Arena* arena) {
@@ -817,6 +855,7 @@ inline void QuestionAnswerGroup::SharedDtor(MessageLite& self) {
   ABSL_DCHECK(this_.GetArena() == nullptr);
   this_._impl_.group_.Destroy();
   this_._impl_.path_.Destroy();
+  this_._impl_.id_.Destroy();
   this_._impl_.~Impl_();
 }
 
@@ -856,15 +895,15 @@ const ::google::protobuf::internal::ClassData* QuestionAnswerGroup::GetClassData
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<1, 2, 0, 40, 2> QuestionAnswerGroup::_table_ = {
+const ::_pbi::TcParseTable<2, 3, 0, 42, 2> QuestionAnswerGroup::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
-    2, 8,  // max_field_number, fast_idx_mask
+    3, 24,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967292,  // skipmap
+    4294967288,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    2,  // num_field_entries
+    3,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     _class_data_.base(),
@@ -874,12 +913,16 @@ const ::_pbi::TcParseTable<1, 2, 0, 40, 2> QuestionAnswerGroup::_table_ = {
     ::_pbi::TcParser::GetTable<::xn::QuestionAnswerGroup>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // string path = 2;
-    {::_pbi::TcParser::FastUS1,
-     {18, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_.path_)}},
+    {::_pbi::TcParser::MiniParse, {}},
     // string group = 1;
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_.group_)}},
+    // string path = 2;
+    {::_pbi::TcParser::FastUS1,
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_.path_)}},
+    // string id = 3;
+    {::_pbi::TcParser::FastUS1,
+     {26, 63, 0, PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_.id_)}},
   }}, {{
     65535, 65535
   }}, {{
@@ -889,13 +932,17 @@ const ::_pbi::TcParseTable<1, 2, 0, 40, 2> QuestionAnswerGroup::_table_ = {
     // string path = 2;
     {PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_.path_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string id = 3;
+    {PROTOBUF_FIELD_OFFSET(QuestionAnswerGroup, _impl_.id_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
   }},
   // no aux_entries
   {{
-    "\26\5\4\0\0\0\0\0"
+    "\26\5\4\2\0\0\0\0"
     "xn.QuestionAnswerGroup"
     "group"
     "path"
+    "id"
   }},
 };
 
@@ -908,6 +955,7 @@ PROTOBUF_NOINLINE void QuestionAnswerGroup::Clear() {
 
   _impl_.group_.ClearToEmpty();
   _impl_.path_.ClearToEmpty();
+  _impl_.id_.ClearToEmpty();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
 
@@ -940,6 +988,14 @@ PROTOBUF_NOINLINE void QuestionAnswerGroup::Clear() {
             ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
                 _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "xn.QuestionAnswerGroup.path");
             target = stream->WriteStringMaybeAliased(2, _s, target);
+          }
+
+          // string id = 3;
+          if (!this_._internal_id().empty()) {
+            const std::string& _s = this_._internal_id();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "xn.QuestionAnswerGroup.id");
+            target = stream->WriteStringMaybeAliased(3, _s, target);
           }
 
           if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
@@ -977,6 +1033,11 @@ PROTOBUF_NOINLINE void QuestionAnswerGroup::Clear() {
               total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
                                               this_._internal_path());
             }
+            // string id = 3;
+            if (!this_._internal_id().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_id());
+            }
           }
           return this_.MaybeComputeUnknownFieldsSize(total_size,
                                                      &this_._impl_._cached_size_);
@@ -996,6 +1057,9 @@ void QuestionAnswerGroup::MergeImpl(::google::protobuf::MessageLite& to_msg, con
   if (!from._internal_path().empty()) {
     _this->_internal_set_path(from._internal_path());
   }
+  if (!from._internal_id().empty()) {
+    _this->_internal_set_id(from._internal_id());
+  }
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1014,6 +1078,7 @@ void QuestionAnswerGroup::InternalSwap(QuestionAnswerGroup* PROTOBUF_RESTRICT ot
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.group_, &other->_impl_.group_, arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.path_, &other->_impl_.path_, arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.id_, &other->_impl_.id_, arena);
 }
 
 ::google::protobuf::Metadata QuestionAnswerGroup::GetMetadata() const {

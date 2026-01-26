@@ -6,6 +6,7 @@ message QuestionAnswer {
     string question = 1;
 	string answer = 2;
 	string group = 3;
+	string id = 4;
 }
 
 message QuestionAnswerList {
@@ -15,6 +16,7 @@ message QuestionAnswerList {
 message QuestionAnswerGroup {
     string group = 1;
 	string path = 2;
+	string id = 3;
 }
 
 message QuestionAnswerGroupList {
