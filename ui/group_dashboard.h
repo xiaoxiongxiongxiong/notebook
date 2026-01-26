@@ -11,6 +11,9 @@ public:
     group_dashboard(QWidget *parent = nullptr);
     ~group_dashboard();
 
+    // 添加分组名称
+    void setGroupName(const QString & name);
+    // 获取分组名称
     QString getGroupName();
 
 public slots:
