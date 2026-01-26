@@ -2,7 +2,6 @@
 
 #include <fstream>
 
-#include "xn.pb.h"
 #include "notebook_utils.h"
 
 bool CQuestionAnswerImpl::open(const std::string & path)
@@ -13,33 +12,21 @@ bool CQuestionAnswerImpl::open(const std::string & path)
 		return false;
 	}
 
-	xn::QuestionAnswerGroupList group_list;
-	xn::QuestionAnswerList qa_list;
-
 	std::ifstream ifs(path, std::ios::binary);
-	if (!qa_list.ParseFromIstream(&ifs))
+	if (!m_lstGroups.ParseFromIstream(&ifs))
 	{
 		notebook_format_string(m_strErrorMsg, "Parse %s failed", path.c_str());
 		ifs.close();
 		return false;
 	}
 
-	if (!group_list.ParseFromIstream(&ifs))
-	{
-		notebook_format_string(m_strErrorMsg, "Parse %s failed", path.c_str());
-		ifs.close();
-		return false;
-	}
+    if (!m_lstQuestions.ParseFromIstream(&ifs))
+    {
+        notebook_format_string(m_strErrorMsg, "Parse %s failed", path.c_str());
+        ifs.close();
+        return false;
+    }
 
-	for (const auto & group : group_list.items())
-	{
-		m_vecGroups.emplace_back(group.group());
-	}
-
-	for (const auto & qa : qa_list.items())
-	{
-		m_vecQuestions.emplace_back(qa.question());
-	}
 	ifs.close();
 
 	m_strPath = path;
@@ -49,6 +36,10 @@ bool CQuestionAnswerImpl::open(const std::string & path)
 
 void CQuestionAnswerImpl::close()
 {
+    std::ofstream ofs(m_strPath, std::ios::binary | std::ios::out);
+    m_lstGroups.SerializeToOstream(&ofs);
+	m_lstQuestions.SerializeToOstream(&ofs);
+    ofs.close();
 }
 
 const std::string & CQuestionAnswerImpl::groupName() const
@@ -56,88 +47,228 @@ const std::string & CQuestionAnswerImpl::groupName() const
 	return m_strGroup;
 }
 
-const std::vector<std::string> & CQuestionAnswerImpl::getGroups()
+bool CQuestionAnswerImpl::getGroups(std::vector<std::pair<std::string, std::string>> & groups)
 {
-	return m_vecGroups;
-}
-
-const std::vector<std::string> & CQuestionAnswerImpl::getQuestions()
-{
-	return m_vecQuestions;
-}
-
-bool CQuestionAnswerImpl::addGroup(const std::string & group)
-{
-	return true;
-}
-
-bool CQuestionAnswerImpl::deleteGroup(const std::string & group)
-{
-	return true;
-}
-
-bool CQuestionAnswerImpl::addQuestion(const std::string & group, const std::string & question, const std::string & answer)
-{
-	return true;
-}
-
-bool CQuestionAnswerImpl::deleteQuestion(const std::string & group, const std::string & question)
-{
-	if (group != m_strGroup)
+	if (m_strPath.empty())
 	{
-		notebook_format_string(m_strErrorMsg, "Invalid group name %s", group.c_str());
+		m_strErrorMsg = "Not opened yet";
 		return false;
 	}
 
-	if (m_vecQuestions.end() == std::find(m_vecQuestions.begin(), m_vecQuestions.end(), question))
+	for (const auto & item : m_lstGroups.items())
 	{
-		notebook_format_string(m_strErrorMsg, "Found question failed");
-		return false;
+		groups.emplace_back(item.id(), item.group());
 	}
 
 	return true;
 }
 
-std::string CQuestionAnswerImpl::queryQuestion(const std::string & group, const std::string & question)
+bool CQuestionAnswerImpl::getQuestions(std::vector<CQuestionAnswerParam> & questions)
 {
-	std::string answer;
+    if (m_strPath.empty())
+    {
+        m_strErrorMsg = "Not opened yet";
+        return false;
+    }
 
-	if (group != m_strGroup)
+	for (const auto & item : m_lstQuestions.items())
 	{
-		notebook_format_string(m_strErrorMsg, "Invalid group name %s", group.c_str());
-		return answer;
+		CQuestionAnswerParam qap{};
+		qap.m_strId = item.id();
+		qap.m_strGroup = item.group();
+		qap.m_strQuestion = item.question();
+		qap.m_strAnswer = item.answer();
+		questions.emplace_back(qap);
 	}
 
-	if (m_vecQuestions.end() == std::find(m_vecQuestions.begin(), m_vecQuestions.end(), question))
-	{
-		notebook_format_string(m_strErrorMsg, "Found question failed");
-		return answer;
-	}
-
-	xn::QuestionAnswerList qa_list;
-	std::ifstream ifs(m_strPath, std::ios::binary);
-	if (!qa_list.ParseFromIstream(&ifs))
-	{
-		notebook_format_string(m_strErrorMsg, "Parse %s failed", m_strPath.c_str());
-		ifs.close();
-		return answer;
-	}
-
-	for (const auto & qa : qa_list.items())
-	{
-		if (question != qa.question())
-			continue;
-
-		answer = qa.answer();
-		break;
-	}
-	ifs.close();
-
-	return answer;
+	return true;
 }
 
-bool CQuestionAnswerImpl::modifyQuestion(const std::string & src_group, const std::string & src_question, const std::string & src_answer,
-										 const std::string & dst_group, const std::string & dst_question, const std::string & dst_answer)
+bool CQuestionAnswerImpl::addGroup(const std::string & gid, const std::string & name)
 {
+    if (m_strPath.empty())
+    {
+        m_strErrorMsg = "Not opened yet";
+        return false;
+    }
+
+	const auto & items = m_lstGroups.items();
+	auto found = std::find_if(items.begin(), items.end(), [&gid](const xn::QuestionAnswerGroup & qag)
+	{
+		return qag.id() == gid;
+	});
+	if (items.end() != found)
+	{
+		notebook_format_string(m_strErrorMsg, "Repeated group id '%s'", gid.c_str());
+		return false;
+	}
+
+	auto * item = m_lstGroups.add_items();
+	item->set_id(gid);
+	item->set_group(name);
+
+	return true;
+}
+
+bool CQuestionAnswerImpl::deleteGroup(const std::string & gid)
+{
+    if (m_strPath.empty())
+    {
+        m_strErrorMsg = "Not opened yet";
+        return false;
+    }
+
+    const auto & items = m_lstGroups.items();
+    auto found = std::find_if(items.begin(), items.end(), [&gid](const xn::QuestionAnswerGroup & qag)
+    {
+        return qag.id() == gid;
+    });
+    if (items.end() == found)
+    {
+        notebook_format_string(m_strErrorMsg, "Found group id '%s' failed", gid.c_str());
+        return false;
+    }
+
+    auto index = static_cast<int>(std::distance(items.begin(), found));
+    m_lstGroups.mutable_items()->SwapElements(index, m_lstGroups.items_size() - 1);
+    m_lstGroups.mutable_items()->RemoveLast();
+
+	return true;
+}
+
+bool CQuestionAnswerImpl::updateGroup(const std::string & gid, const std::string & name)
+{
+    if (m_strPath.empty())
+    {
+        m_strErrorMsg = "Not opened yet";
+        return false;
+    }
+
+    const auto & items = m_lstGroups.items();
+    auto found = std::find_if(items.begin(), items.end(), [&gid](const xn::QuestionAnswerGroup & qag)
+    {
+        return qag.id() == gid;
+    });
+    if (items.end() == found)
+    {
+        notebook_format_string(m_strErrorMsg, "Found group id '%s' failed", gid.c_str());
+        return false;
+    }
+
+    auto index = static_cast<int>(std::distance(items.begin(), found));
+    auto * group = m_lstGroups.mutable_items(index);
+    group->set_group(name);
+}
+
+bool CQuestionAnswerImpl::addQuestion(const CQuestionAnswerParam & qap)
+{
+    if (m_strPath.empty())
+    {
+        m_strErrorMsg = "Not opened yet";
+        return false;
+    }
+
+    const auto & qid = qap.m_strId;
+    const auto & items = m_lstQuestions.items();
+    auto found = std::find_if(items.begin(), items.end(), [&qid](const xn::QuestionAnswer & qa)
+    {
+        return qa.id() == qid;
+    });
+    if (items.end() != found)
+    {
+        notebook_format_string(m_strErrorMsg, "Repeated question id '%s'", qid.c_str());
+        return false;
+    }
+
+    auto * item = m_lstQuestions.add_items();
+    item->set_id(qap.m_strId);
+    item->set_group(qap.m_strGroup);
+    item->set_question(qap.m_strQuestion);
+    item->set_answer(qap.m_strAnswer);
+
+	return true;
+}
+
+bool CQuestionAnswerImpl::deleteQuestion(const std::string & qid)
+{
+    if (m_strPath.empty())
+    {
+        m_strErrorMsg = "Not opened yet";
+        return false;
+    }
+
+    const auto & items = m_lstQuestions.items();
+    auto found = std::find_if(items.begin(), items.end(), [&qid](const xn::QuestionAnswer & qa)
+    {
+        return qa.id() == qid;
+    });
+    if (items.end() == found)
+    {
+        notebook_format_string(m_strErrorMsg, "Get question by id '%s' failed", qid.c_str());
+        return false;
+    }
+
+    auto index = static_cast<int>(std::distance(items.begin(), found));
+    m_lstQuestions.mutable_items()->SwapElements(index, m_lstQuestions.items_size() - 1);
+    m_lstQuestions.mutable_items()->RemoveLast();
+
+	return true;
+}
+
+bool CQuestionAnswerImpl::queryQuestion(const std::string & qid, std::string & answer)
+{
+    if (m_strPath.empty())
+    {
+        m_strErrorMsg = "Not opened yet";
+        return false;
+    }
+
+    const auto & items = m_lstQuestions.items();
+    auto found = std::find_if(items.begin(), items.end(), [&qid](const xn::QuestionAnswer & qa)
+    {
+        return qa.id() == qid;
+    });
+    if (items.end() == found)
+    {
+        notebook_format_string(m_strErrorMsg, "Get question by id '%s' failed", qid.c_str());
+        return false;
+    }
+
+    answer = (*found).answer();
+
+	return true;
+}
+
+bool CQuestionAnswerImpl::updateQuestion(const std::string & qid, const CQuestionAnswerParam & dst)
+{
+    if (m_strPath.empty())
+    {
+        m_strErrorMsg = "Not opened yet";
+        return false;
+    }
+
+    if (qid != dst.m_strId)
+    {
+        notebook_format_string(m_strErrorMsg, "Src id '%s' and dst id '%s' is mismatch", qid.c_str(), dst.m_strId.c_str());
+        return false;
+    }
+
+    auto & items = m_lstQuestions.items();
+    auto found = std::find_if(items.begin(), items.end(), [&qid](const xn::QuestionAnswer & qa)
+    {
+        return qa.id() == qid;
+    });
+    if (items.end() == found)
+    {
+        notebook_format_string(m_strErrorMsg, "Get question by id '%s' failed", qid.c_str());
+        return false;
+    }
+
+    auto index = static_cast<int>(std::distance(items.begin(), found));
+    auto * qap = m_lstQuestions.mutable_items(index);
+    qap->set_group(dst.m_strGroup);
+    qap->set_question(dst.m_strQuestion);
+    qap->set_answer(dst.m_strAnswer);
+
 	return true;
 }

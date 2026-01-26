@@ -3,6 +3,21 @@
 #include <string>
 #include <vector>
 
+#include "xn.pb.h"
+
+class CQuestionAnswerParam
+{
+public:
+    // 唯一id
+    std::string m_strId;
+    // 问题描述
+    std::string m_strQuestion;
+    // 答案
+    std::string m_strAnswer;
+    // 所属分组
+    std::string m_strGroup;
+};
+
 class CQuestionAnswerImpl
 {
 public:
@@ -14,39 +29,37 @@ public:
     // 关闭
     void close();
 
-    // 分组名字
+    // 获取当前分组名字
     const std::string & groupName() const;
-
-    // 包含的分组
-    const std::vector<std::string> & getGroups();
-
-    // 包含的问题
-    const std::vector<std::string> & getQuestions();
+    // 获取所包含的分组 <id:name>
+    bool getGroups(std::vector<std::pair<std::string, std::string>> & groups);
+    // 获取问题
+    bool getQuestions(std::vector<CQuestionAnswerParam> & questions);
 
     // 添加分组
-    bool addGroup(const std::string & group);
+    bool addGroup(const std::string & gid, const std::string & name);
     // 删除分组
-    bool deleteGroup(const std::string & group);
+    bool deleteGroup(const std::string & gid);
+    // 修改分组
+    bool updateGroup(const std::string & gid, const std::string & name);
 
     // 添加问题
-    bool addQuestion(const std::string & group, const std::string & question, const std::string & answer);
+    bool addQuestion(const CQuestionAnswerParam & qap);
     // 删除问题
-    bool deleteQuestion(const std::string & group, const std::string & question);
+    bool deleteQuestion(const std::string & qid);
     // 查询问题
-    std::string queryQuestion(const std::string & group, const std::string & question);
+    bool queryQuestion(const std::string & qid, std::string & answer);
     // 修改问题
-    bool modifyQuestion(const std::string & src_group, const std::string & src_question, const std::string & src_answer,
-                        const std::string & dst_group, const std::string & dst_question, const std::string & dst_answer);
+    bool updateQuestion(const std::string & qid, const CQuestionAnswerParam & dst);
 
 private:
-    // 包含分组
-    std::vector<std::string> m_vecGroups;
-    // 包含问题
-    std::vector<std::string> m_vecQuestions;
     // 所属分组
     std::string m_strGroup;
     // 存放位置
     std::string m_strPath;
+
+    xn::QuestionAnswerGroupList m_lstGroups;
+    xn::QuestionAnswerList m_lstQuestions;
 
     // 错误信息
     std::string m_strErrorMsg;
