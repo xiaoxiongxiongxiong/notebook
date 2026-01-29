@@ -4,7 +4,7 @@
 
 #include "notebook_utils.h"
 
-bool CQuestionAnswerImpl::open(const std::string & path)
+bool CQuestionAnswerImpl::open(const std::string & path, const bool & flag)
 {
 	if (path.empty())
 	{
@@ -12,15 +12,21 @@ bool CQuestionAnswerImpl::open(const std::string & path)
 		return false;
 	}
 
+    if (!std::filesystem::exists(path))
+    {
+        m_strPath = path;
+        return true;
+    }
+
 	std::ifstream ifs(path, std::ios::binary);
-	if (!m_lstGroups.ParseFromIstream(&ifs))
+	if (!flag && !m_lstGroups.ParseFromIstream(&ifs))
 	{
 		notebook_format_string(m_strErrorMsg, "Parse %s failed", path.c_str());
-		ifs.close();
-		return false;
+        ifs.close();
+        return false;
 	}
 
-    if (!m_lstQuestions.ParseFromIstream(&ifs))
+    if (flag && !m_lstQuestions.ParseFromIstream(&ifs))
     {
         notebook_format_string(m_strErrorMsg, "Parse %s failed", path.c_str());
         ifs.close();
@@ -36,9 +42,17 @@ bool CQuestionAnswerImpl::open(const std::string & path)
 
 void CQuestionAnswerImpl::close()
 {
+    if (m_lstGroups.items().empty() && m_lstQuestions.items().empty())
+    {
+        std::filesystem::remove(m_strPath);
+        return;
+    }
+
     std::ofstream ofs(m_strPath, std::ios::binary | std::ios::out);
-    m_lstGroups.SerializeToOstream(&ofs);
-	m_lstQuestions.SerializeToOstream(&ofs);
+    if (m_lstGroups.items_size() > 0)
+        m_lstGroups.SerializeToOstream(&ofs);
+    if (m_lstQuestions.items_size() > 0)
+        m_lstQuestions.SerializeToOstream(&ofs);
     ofs.close();
 }
 
@@ -47,7 +61,7 @@ const std::string & CQuestionAnswerImpl::groupName() const
 	return m_strGroup;
 }
 
-bool CQuestionAnswerImpl::getGroups(std::vector<std::pair<std::string, std::string>> & groups)
+bool CQuestionAnswerImpl::getGroups(std::unordered_map<std::string, std::string> & groups)
 {
 	if (m_strPath.empty())
 	{
@@ -57,7 +71,7 @@ bool CQuestionAnswerImpl::getGroups(std::vector<std::pair<std::string, std::stri
 
 	for (const auto & item : m_lstGroups.items())
 	{
-		groups.emplace_back(item.id(), item.group());
+		groups.emplace(item.id(), item.group());
 	}
 
 	return true;
@@ -158,6 +172,8 @@ bool CQuestionAnswerImpl::updateGroup(const std::string & gid, const std::string
     auto index = static_cast<int>(std::distance(items.begin(), found));
     auto * group = m_lstGroups.mutable_items(index);
     group->set_group(name);
+
+    return true;
 }
 
 bool CQuestionAnswerImpl::addQuestion(const CQuestionAnswerParam & qap)
@@ -271,4 +287,9 @@ bool CQuestionAnswerImpl::updateQuestion(const std::string & qid, const CQuestio
     qap->set_answer(dst.m_strAnswer);
 
 	return true;
+}
+
+const char * CQuestionAnswerImpl::err() const
+{
+    return m_strErrorMsg.c_str();
 }

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "xn.pb.h"
 
@@ -25,14 +26,14 @@ public:
     ~CQuestionAnswerImpl() = default;
 
     // 打开
-    bool open(const std::string & path);
+    bool open(const std::string & path, const bool & flag = true);
     // 关闭
     void close();
 
     // 获取当前分组名字
     const std::string & groupName() const;
     // 获取所包含的分组 <id:name>
-    bool getGroups(std::vector<std::pair<std::string, std::string>> & groups);
+    bool getGroups(std::unordered_map<std::string, std::string> & groups);
     // 获取问题
     bool getQuestions(std::vector<CQuestionAnswerParam> & questions);
 
@@ -51,6 +52,9 @@ public:
     bool queryQuestion(const std::string & qid, std::string & answer);
     // 修改问题
     bool updateQuestion(const std::string & qid, const CQuestionAnswerParam & dst);
+
+    // 错误信息
+    const char * err() const;
 
 private:
     // 所属分组
