@@ -3,6 +3,9 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_notebook.h"
 
+class CQuestionBankImpl;
+class CQuestionGroupParam;
+
 class notebook : public QMainWindow
 {
     Q_OBJECT
@@ -37,9 +40,21 @@ public slots:
     void onTreeWidgetItemClicked(QTreeWidgetItem * item, int col);
 
 private:
+    // 初始化题库
+    bool initQuestionBank();
+    // 构建题库树
+    void initQuestionTree(QTreeWidgetItem * parent_item, const CQuestionGroupParam * qgp);
+
+    // 获取唯一id
+    std::string uid();
+    // 从QString转std::string
+    std::string getString(const QString & str);
+
+private:
     Ui::notebookClass ui;
 
     QTreeWidgetItem * m_ptrQuestion = nullptr;
     QMenu * m_ptrMenu = nullptr;
+    CQuestionBankImpl * m_ptrBank = nullptr;
 };
 
