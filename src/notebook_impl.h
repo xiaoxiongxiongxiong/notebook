@@ -25,6 +25,15 @@ public:
     std::vector<CQuestionGroupParam> m_vecGroups;
 };
 
+typedef enum _GROUP_CTRL_TYPE
+{
+    GROUP_CTRL_NONE = -1,
+    GROUP_CTRL_ADD,
+    GROUP_CTRL_DELETE,
+    GROUP_CTRL_UPDATE,
+    GROUP_CTRL_MAX
+} GROUP_CTRL_TYPE;
+
 class CQuestionBankImpl
 {
 public:
@@ -56,10 +65,10 @@ public:
     bool addGroup(const std::string & pid, const std::string & name, const std::string & id);
 
     // 删除分组
-    bool deleteGroup(const std::string & id);
+    bool deleteGroup(const std::string & pid, const std::string & id);
 
     // 更新分组
-    bool updateGroup(const std::string & id, const std::string & name);
+    bool updateGroup(const std::string & pid, const std::string & id, const std::string & name);
 
 private:
     bool initQuestionBank(const std::string & parent_name, CQuestionGroupParam & qgp,
@@ -71,8 +80,16 @@ private:
     // 查找问题上下文
     CQuestionAnswerImpl * findQustionAnswerContext(CQuestionGroupParam & qgp, const std::string & gid);
 
+    // 添加分组，qgp为父组
+    bool addGroup(const std::string & id, const std::string & name, CQuestionGroupParam & qgp);
+    // 删除分组
+    bool deleteGroup(const std::string & id, CQuestionGroupParam & qgp);
+    // 更新分组
+    bool updateGroup(const std::string & id, const std::string & name, CQuestionGroupParam & qgp);
+
     // 操作分组
-    bool ctrlGroup(CQuestionGroupParam & qgp, const std::string & gid);
+    bool ctrlGroup(const std::string & pid, const std::string & gid, const std::string & name,
+                   GROUP_CTRL_TYPE type, CQuestionGroupParam & qgp);
 
 private:
     // 错误信息

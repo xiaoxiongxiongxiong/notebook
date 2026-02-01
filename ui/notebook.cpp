@@ -160,8 +160,12 @@ void notebook::onBtnClickedDeleteGroup()
     item->takeChildren();
     parent_item->removeChild(item);
 
+    auto pid = parent_item->data(0, NOTEBOOK_ROLE_ID);
     auto tmp = item->data(0, NOTEBOOK_ROLE_ID);
-    m_ptrBank->deleteGroup(tmp.toString().toStdString());
+    if (pid.isValid())
+        m_ptrBank->deleteGroup(pid.toString().toStdString(), tmp.toString().toStdString());
+    else
+        m_ptrBank->deleteGroup({}, tmp.toString().toStdString());
 }
 
 void notebook::onBtnClickedMoveGroup()
@@ -180,6 +184,17 @@ void notebook::onBtnClickedModifyGroup()
     item->setText(0, gd.getGroupName());
     item->setToolTip(0, gd.getGroupName());
     item->setExpanded(true);
+
+    std::string pid;
+    auto tmp = item->data(0, NOTEBOOK_ROLE_ID);
+    auto * parent_item = item->parent();
+    if (nullptr != parent_item)
+    {
+        auto ptmp = parent_item->data(0, NOTEBOOK_ROLE_ID);
+        if (ptmp.isValid())
+            pid = ptmp.toString().toStdString();
+    }
+    m_ptrBank->updateGroup(pid, tmp.toString().toStdString(), getString(gd.getGroupName()));
 }
 
 void notebook::onBtnClickedAddQuestion()

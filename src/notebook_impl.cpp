@@ -207,36 +207,17 @@ bool CQuestionBankImpl::addGroup(const std::string & pid, const std::string & na
         return false;
     }
 
-    m_mapIds.emplace(id, name);
-    m_ptrIds->addGroup(id, name);
-
-    if (pid.empty())
-    {
-        CQuestionGroupParam qgp;
-        qgp.m_strId = id;
-        qgp.m_strName = name;
-        qgp.m_strPath = m_clsQuestionBank.m_strPath + "\\" + name;
-        m_clsQuestionBank.m_vecGroups.emplace_back(qgp);
-
-        if (!std::filesystem::exists(qgp.m_strPath) && !std::filesystem::create_directory(qgp.m_strPath))
-        {
-            notebook_format_string(m_strErrorMsg, "Create directory '%s' failed", qgp.m_strPath.c_str());
-            return false;
-        }
-        return true;
-    }
-
-    return true;
+    return ctrlGroup(pid, id, name, GROUP_CTRL_ADD, m_clsQuestionBank);
 }
 
-bool CQuestionBankImpl::deleteGroup(const std::string & id)
+bool CQuestionBankImpl::deleteGroup(const std::string & pid, const std::string & id)
 {
-    return true;
+    return ctrlGroup(pid, id, {}, GROUP_CTRL_DELETE, m_clsQuestionBank);
 }
 
-bool CQuestionBankImpl::updateGroup(const std::string & id, const std::string & name)
+bool CQuestionBankImpl::updateGroup(const std::string & pid, const std::string & id, const std::string & name)
 {
-    return true;
+    return ctrlGroup(pid, id, name, GROUP_CTRL_UPDATE, m_clsQuestionBank);
 }
 
 bool CQuestionBankImpl::initQuestionBank(const std::string & parent_name, CQuestionGroupParam & qgp,
@@ -354,7 +335,126 @@ CQuestionAnswerImpl * CQuestionBankImpl::findQustionAnswerContext(CQuestionGroup
     return (*found).m_vecQuestions[0].get();
 }
 
-bool CQuestionBankImpl::ctrlGroup(CQuestionGroupParam & qgp, const std::string & gid)
+bool CQuestionBankImpl::addGroup(const std::string & id, const std::string & name, CQuestionGroupParam & qgp)
 {
+    m_mapIds.emplace(id, name);
+    m_ptrIds->addGroup(id, name);
+
+    CQuestionGroupParam grp;
+    grp.m_strId = id;
+    grp.m_strName = name;
+    grp.m_strPath = qgp.m_strPath + "\\" + name;
+    qgp.m_vecGroups.emplace_back(grp);
+
+    if (!std::filesystem::exists(grp.m_strPath) && !std::filesystem::create_directory(grp.m_strPath))
+    {
+        notebook_format_string(m_strErrorMsg, "Create directory '%s' failed", qgp.m_strPath.c_str());
+        return false;
+    }
     return true;
+}
+
+bool CQuestionBankImpl::deleteGroup(const std::string & id, CQuestionGroupParam & qgp)
+{
+    m_mapIds.erase(id);
+    m_ptrIds->deleteGroup(id);
+
+    auto found = std::find_if(qgp.m_vecGroups.begin(), qgp.m_vecGroups.end(),
+                              [&id](const CQuestionGroupParam & grp)
+    {
+        return grp.m_strId == id;
+    });
+    if (qgp.m_vecGroups.end() == found)
+    {
+        notebook_format_string(m_strErrorMsg, "Found group by id '%s' failed", id.c_str());
+        return false;
+    }
+
+    for (auto & ctx : (*found).m_vecQuestions)
+    {
+        ctx->close();
+        ctx.reset();
+    }
+    (*found).m_vecQuestions.clear();
+
+    for (auto & grp : (*found).m_vecGroups)
+    {
+        deleteGroup(grp.m_strId, *found);
+    }
+
+    try
+    {
+        if (std::filesystem::exists((*found).m_strPath) && std::filesystem::is_directory((*found).m_strPath))
+        {
+            std::filesystem::remove_all((*found).m_strPath); // 递归删除整个目录树
+        }
+    }
+    catch (const std::filesystem::filesystem_error & e)
+    {
+        notebook_format_string(m_strErrorMsg, "%s", e.what());
+        return false;
+    }
+
+    qgp.m_vecGroups.erase(found);
+
+    return true;
+}
+
+bool CQuestionBankImpl::updateGroup(const std::string & id, const std::string & name, CQuestionGroupParam & qgp)
+{
+    auto found = std::find_if(qgp.m_vecGroups.begin(), qgp.m_vecGroups.end(),
+                              [&id](const CQuestionGroupParam & grp)
+    {
+        return grp.m_strId == id;
+    });
+    if (qgp.m_vecGroups.end() == found)
+    {
+        notebook_format_string(m_strErrorMsg, "Found group by id '%s' failed", id.c_str());
+        return false;
+    }
+
+    m_ptrIds->updateGroup(id, name);
+
+    (*found).m_strName = name;
+    std::string path = qgp.m_strPath + "\\" + name;
+
+    try
+    {
+        std::filesystem::rename((*found).m_strPath, path);
+    }
+    catch (const std::filesystem::filesystem_error & e)
+    {
+        notebook_format_string(m_strErrorMsg, "%s", e.what());
+        return false;
+    }
+
+    return true;
+}
+
+bool CQuestionBankImpl::ctrlGroup(const std::string & pid, const std::string & gid, const std::string & name, 
+                                  GROUP_CTRL_TYPE type, CQuestionGroupParam & qgp)
+{
+    if (pid.empty() || pid == qgp.m_strId)
+    {
+        switch (type)
+        {
+        case GROUP_CTRL_ADD:
+            return addGroup(gid, name, qgp);
+        case GROUP_CTRL_DELETE:
+            return deleteGroup(gid, qgp);
+        case GROUP_CTRL_UPDATE:
+            return updateGroup(gid, name, qgp);
+        default:
+            return false;
+        }
+
+        return true;
+    }
+
+    auto found = std::find_if(qgp.m_vecGroups.begin(), qgp.m_vecGroups.end(),
+                              [&pid, &gid, &name, type, this](CQuestionGroupParam & grp)
+    {
+        return ctrlGroup(pid, gid, name, type, grp);
+    });
+    return qgp.m_vecGroups.end() != found;
 }
