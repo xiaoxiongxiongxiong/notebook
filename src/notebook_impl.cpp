@@ -304,35 +304,15 @@ CQuestionAnswerImpl * CQuestionBankImpl::findQustionAnswerContext(CQuestionGroup
         return qgp.m_vecQuestions[0].get();
     }
 
-    auto found = std::find_if(qgp.m_vecGroups.begin(), qgp.m_vecGroups.end(),
-                              [&gid, this](CQuestionGroupParam & grp)
+    CQuestionAnswerImpl* ctx = nullptr;
+    for (auto& grp : qgp.m_vecGroups)
     {
-        auto * ctx = findQustionAnswerContext(grp, gid);
-        return nullptr != ctx;
-    });
-    if (qgp.m_vecGroups.end() == found)
-    {
-        return nullptr;
-    }
-    
-    if ((*found).m_vecQuestions.empty())
-    {
-        auto path = qgp.m_strPath + "\\" + qgp.m_strId + ".dat";
-        auto impl = std::make_shared<CQuestionAnswerImpl>();
-        if (!impl)
-        {
-            return nullptr;
-        }
-        if (!impl->open(path))
-        {
-            impl.reset();
-            return nullptr;
-        }
-
-        (*found).m_vecQuestions.emplace_back(impl);
+        ctx = findQustionAnswerContext(grp, gid);
+        if (nullptr != ctx)
+            break;
     }
 
-    return (*found).m_vecQuestions[0].get();
+    return ctx;
 }
 
 bool CQuestionBankImpl::addGroup(const std::string & id, const std::string & name, CQuestionGroupParam & qgp)
