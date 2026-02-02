@@ -22,6 +22,9 @@ notebook::notebook(QWidget *parent)
 {
     ui.setupUi(this);
 
+    ui.m_edtQuestion->setReadOnly(true);
+    ui.m_edtAnswer->setReadOnly(true);
+
     connect(ui.m_btnLast, SIGNAL(clicked()), this, SLOT(onBtnClickedLastQuestion()));
     connect(ui.m_btnCtrl, SIGNAL(clicked()), this, SLOT(onBtnClickedShowAnswer()));
     connect(ui.m_btnNext, SIGNAL(clicked()), this, SLOT(onBtnClickedNextQuestion()));
@@ -136,10 +139,6 @@ void notebook::onBtnClickedAddGroup()
     child->setData(0, NOTEBOOK_ROLE_ID, QVariant::fromValue(QString::fromStdString(id)));
     item->setExpanded(true);
 
-    std::string name;
-    auto tmp = grp_name.toLocal8Bit();
-    name.assign(tmp.constData(), tmp.length());
-
     std::string pid;
     if (nullptr != item->parent())
     {
@@ -147,7 +146,7 @@ void notebook::onBtnClickedAddGroup()
         pid = tmp.toString().toStdString();
     }
 
-    m_ptrBank->addGroup(pid, name, id);
+    m_ptrBank->addGroup(pid, getString(grp_name), id);
 }
 
 void notebook::onBtnClickedDeleteGroup()
@@ -374,7 +373,7 @@ std::string notebook::uid()
 std::string notebook::getString(const QString & str)
 {
     std::string res;
-    auto tmp = str.toLocal8Bit();
+    auto tmp = str.toUtf8();
     res.assign(tmp.constData(), tmp.length());
 
     return res;
