@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/notebook">
         <file>res/notebook.ico</file>
+        <file>res/group.ico</file>
+        <file>res/question.ico</file>
     </qresource>
 </RCC>
