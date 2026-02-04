@@ -70,6 +70,9 @@ public:
     // 更新分组
     bool updateGroup(const std::string & pid, const std::string & id, const std::string & name);
 
+    // 错误信息
+    const char * err() const;
+
 private:
     bool initQuestionBank(const std::string & parent_name, CQuestionGroupParam & qgp,
                           const std::string & path, const std::string & name, bool is_file);

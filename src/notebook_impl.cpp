@@ -220,6 +220,11 @@ bool CQuestionBankImpl::updateGroup(const std::string & pid, const std::string &
     return ctrlGroup(pid, id, name, GROUP_CTRL_UPDATE, m_clsQuestionBank);
 }
 
+const char * CQuestionBankImpl::err() const
+{
+    return m_strErrorMsg.c_str();
+}
+
 bool CQuestionBankImpl::initQuestionBank(const std::string & parent_name, CQuestionGroupParam & qgp,
                                          const std::string & path, const std::string & name, bool is_file)
 {
