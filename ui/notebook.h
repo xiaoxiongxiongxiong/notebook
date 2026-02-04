@@ -23,8 +23,6 @@ public slots:
     void onBtnClickedAddGroup();
     // 删除分组
     void onBtnClickedDeleteGroup();
-    // 移动分组
-    void onBtnClickedMoveGroup();
     // 修改分组
     void onBtnClickedModifyGroup();
 
@@ -32,8 +30,6 @@ public slots:
     void onBtnClickedAddQuestion();
     // 删除问题
     void onBtnClickedDeleteQuestion();
-    // 移动问题
-    void onBtnClickedMoveQuestion();
     // 修改问题
     void onBtnClickedModifyQuestion();
 
@@ -44,6 +40,9 @@ private:
     bool initQuestionBank();
     // 构建题库树
     void initQuestionTree(QTreeWidgetItem * parent_item, const CQuestionGroupParam * qgp);
+
+    // 获取上一个/下一个item flag-true上一个 flag-false下一个
+    QTreeWidgetItem * findTreeWidgetItem(QTreeWidgetItem * item, bool flag);
 
     // 获取唯一id
     std::string uid();

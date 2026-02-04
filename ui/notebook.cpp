@@ -6,7 +6,6 @@
 #include <QStyleFactory>
 #include <QMessageBox>
 #include <QMenu>
-#include <QDir>
 #include <QUuid>
 
 #include "group_dashboard.h"
@@ -14,7 +13,7 @@
 #include "notebook_impl.h"
 #include "question_answer_impl.h"
 
-#define NOTEBOOK_ROLE_ID (Qt::UserRole + 1)
+#define NOTEBOOK_ROLE_ID     (Qt::UserRole + 1)
 #define NOTEBOOK_ROLE_ANSWER (Qt::UserRole + 2)
 
 notebook::notebook(QWidget *parent)
@@ -50,10 +49,6 @@ notebook::notebook(QWidget *parent)
     m_ptrMenu->addAction(modify_group);
     connect(modify_group, &QAction::triggered, this, &notebook::onBtnClickedModifyGroup);
 
-    QAction * move_group = new QAction(QStringLiteral("移动分组"));
-    m_ptrMenu->addAction(move_group);
-    connect(move_group, &QAction::triggered, this, &notebook::onBtnClickedMoveGroup);
-
     m_ptrMenu->addSeparator();
 
     QAction * add_question = new QAction(QStringLiteral("添加问题"));
@@ -67,10 +62,6 @@ notebook::notebook(QWidget *parent)
     QAction * modify_question = new QAction(QStringLiteral("修改问题"));
     m_ptrMenu->addAction(modify_question);
     connect(modify_question, &QAction::triggered, this, &notebook::onBtnClickedModifyQuestion);
-
-    QAction * move_question = new QAction(QStringLiteral("移动问题"));
-    m_ptrMenu->addAction(move_question);
-    connect(move_question, &QAction::triggered, this, &notebook::onBtnClickedModifyQuestion);
 
     connect(ui.m_treeQuestionBank, &QTreeWidget::itemPressed, this, &notebook::onTreeWidgetItemClicked);
 
@@ -101,12 +92,31 @@ notebook::~notebook()
 
 void notebook::onBtnClickedLastQuestion()
 {
+    auto * cur_item = ui.m_treeQuestionBank->currentItem();
+    auto * item = findTreeWidgetItem(cur_item, true);
+    if (nullptr == item)
+    {
+        QMessageBox::information(this, QStringLiteral("提示"), QStringLiteral("已到第一个！"));
+        return;
+    }
+
+    ui.m_edtQuestion->setText(item->text(0));
+    ui.m_edtAnswer->clear();
 
 }
 
 void notebook::onBtnClickedNextQuestion()
 {
+    auto * cur_item = ui.m_treeQuestionBank->currentItem();
+    auto * item = findTreeWidgetItem(cur_item, false);
+    if (nullptr == item)
+    {
+        QMessageBox::information(this, QStringLiteral("提示"), QStringLiteral("已到最后一个！"));
+        return;
+    }
 
+    ui.m_edtQuestion->setText(item->text(0));
+    ui.m_edtAnswer->clear();
 }
 
 void notebook::onBtnClickedShowAnswer()
@@ -118,8 +128,14 @@ void notebook::onBtnClickedShowAnswer()
         return;
     }
 
-    auto answer = item->data(0, NOTEBOOK_ROLE_ANSWER);
-    ui.m_edtAnswer->setText(answer.toString());
+    auto answer = item->data(0, NOTEBOOK_ROLE_ANSWER).toString();
+    if (answer.isEmpty())
+    {
+        QMessageBox::information(this, QStringLiteral("提示"), QStringLiteral("暂未录入答案！"));
+        return;
+    }
+
+    ui.m_edtAnswer->setText(answer);
 }
 
 void notebook::onBtnClickedAddGroup()
@@ -131,22 +147,27 @@ void notebook::onBtnClickedAddGroup()
 
     auto grp_name = gd.getGroupName();
     auto * item = ui.m_treeQuestionBank->currentItem();
-    QTreeWidgetItem * child = new QTreeWidgetItem(item);
-    child->setText(0, grp_name);
-    child->setToolTip(0, grp_name);
     const auto id = uid();
-    child->setData(0, Qt::UserRole, QVariant::fromValue(true));
-    child->setData(0, NOTEBOOK_ROLE_ID, QVariant::fromValue(QString::fromStdString(id)));
-    item->setExpanded(true);
-
     std::string pid;
     if (nullptr != item->parent())
     {
         auto tmp = item->data(0, NOTEBOOK_ROLE_ID);
         pid = tmp.toString().toStdString();
     }
+    if (!m_ptrBank->addGroup(pid, getString(grp_name), id))
+    {
+        QMessageBox::critical(this, QStringLiteral("警告"), QStringLiteral("添加分组失败：%1！").arg(m_ptrBank->err()));
+        return;
+    }
 
-    m_ptrBank->addGroup(pid, getString(grp_name), id);
+    QTreeWidgetItem * child = new QTreeWidgetItem(item);
+    child->setIcon(0, QIcon(":/notebook/res/group.ico"));
+    child->setText(0, grp_name);
+    child->setToolTip(0, grp_name);
+
+    child->setData(0, Qt::UserRole, QVariant::fromValue(true));
+    child->setData(0, NOTEBOOK_ROLE_ID, QVariant::fromValue(QString::fromStdString(id)));
+    item->setExpanded(true);
 }
 
 void notebook::onBtnClickedDeleteGroup()
@@ -156,19 +177,21 @@ void notebook::onBtnClickedDeleteGroup()
     if (nullptr == parent_item)
         return;
 
-    item->takeChildren();
-    parent_item->removeChild(item);
-
+    bool res = false;
     auto pid = parent_item->data(0, NOTEBOOK_ROLE_ID);
     auto tmp = item->data(0, NOTEBOOK_ROLE_ID);
     if (pid.isValid())
-        m_ptrBank->deleteGroup(pid.toString().toStdString(), tmp.toString().toStdString());
+        res = m_ptrBank->deleteGroup(pid.toString().toStdString(), tmp.toString().toStdString());
     else
-        m_ptrBank->deleteGroup({}, tmp.toString().toStdString());
-}
+        res = m_ptrBank->deleteGroup({}, tmp.toString().toStdString());
+    if (!res)
+    {
+        QMessageBox::critical(this, QStringLiteral("警告"), QStringLiteral("删除分组失败：%1！").arg(m_ptrBank->err()));
+        return;
+    }
 
-void notebook::onBtnClickedMoveGroup()
-{
+    item->takeChildren();
+    parent_item->removeChild(item);
 }
 
 void notebook::onBtnClickedModifyGroup()
@@ -180,10 +203,6 @@ void notebook::onBtnClickedModifyGroup()
     if (QDialog::Accepted != res)
         return;
 
-    item->setText(0, gd.getGroupName());
-    item->setToolTip(0, gd.getGroupName());
-    item->setExpanded(true);
-
     std::string pid;
     auto tmp = item->data(0, NOTEBOOK_ROLE_ID);
     auto * parent_item = item->parent();
@@ -193,7 +212,15 @@ void notebook::onBtnClickedModifyGroup()
         if (ptmp.isValid())
             pid = ptmp.toString().toStdString();
     }
-    m_ptrBank->updateGroup(pid, tmp.toString().toStdString(), getString(gd.getGroupName()));
+    if (!m_ptrBank->updateGroup(pid, tmp.toString().toStdString(), getString(gd.getGroupName())))
+    {
+        QMessageBox::critical(this, QStringLiteral("警告"), QStringLiteral("更新分组失败：%1！").arg(m_ptrBank->err()));
+        return;
+    }
+
+    item->setText(0, gd.getGroupName());
+    item->setToolTip(0, gd.getGroupName());
+    item->setExpanded(true);
 }
 
 void notebook::onBtnClickedAddQuestion()
@@ -205,16 +232,21 @@ void notebook::onBtnClickedAddQuestion()
 
     const auto id = uid();
     auto * item = ui.m_treeQuestionBank->currentItem();
+    auto gid = item->data(0, NOTEBOOK_ROLE_ID);
+    if (!m_ptrBank->addQuestion(gid.toString().toStdString(), id, getString(qd.getQuestion()), getString(qd.getAnswer())))
+    {
+        QMessageBox::critical(this, QStringLiteral("警告"), QStringLiteral("添加问题失败：%1！").arg(m_ptrBank->err()));
+        return;
+    }
+
     QTreeWidgetItem * child = new QTreeWidgetItem(item);
+    child->setIcon(0, QIcon(":/notebook/res/question.ico"));
     child->setText(0, qd.getQuestion());
     child->setToolTip(0, qd.getQuestion());
     child->setData(0, Qt::UserRole, QVariant::fromValue(false));
     child->setData(0, NOTEBOOK_ROLE_ID, QVariant::fromValue(QString::fromStdString(id)));
     child->setData(0, NOTEBOOK_ROLE_ANSWER, QVariant::fromValue(qd.getAnswer()));
     item->setExpanded(true);
-
-    auto gid = item->data(0, NOTEBOOK_ROLE_ID);
-    m_ptrBank->addQuestion(gid.toString().toStdString(), id, getString(qd.getQuestion()), getString(qd.getAnswer()));
 }
 
 void notebook::onBtnClickedDeleteQuestion()
@@ -226,14 +258,14 @@ void notebook::onBtnClickedDeleteQuestion()
 
     auto gid = parent_item->data(0, NOTEBOOK_ROLE_ID);
     auto qid = item->data(0, NOTEBOOK_ROLE_ID);
-    m_ptrBank->deleteQuestion(gid.toString().toStdString(), qid.toString().toStdString());
+    if (!m_ptrBank->deleteQuestion(gid.toString().toStdString(), qid.toString().toStdString()))
+    {
+        QMessageBox::critical(this, QStringLiteral("警告"), QStringLiteral("删除问题失败：%1！").arg(m_ptrBank->err()));
+        return;
+    }
 
     item->takeChildren();
     parent_item->removeChild(item);
-}
-
-void notebook::onBtnClickedMoveQuestion()
-{
 }
 
 void notebook::onBtnClickedModifyQuestion()
@@ -247,10 +279,6 @@ void notebook::onBtnClickedModifyQuestion()
     if (QDialog::Accepted != res)
         return;
 
-    item->setText(0, qd.getQuestion());
-    item->setToolTip(0, qd.getQuestion());
-    item->setData(0, NOTEBOOK_ROLE_ANSWER, qd.getAnswer());
-
     auto * parent_item = item->parent();
     if (nullptr == parent_item)
     {
@@ -260,7 +288,16 @@ void notebook::onBtnClickedModifyQuestion()
 
     auto gid = parent_item->data(0, NOTEBOOK_ROLE_ID).toString().toStdString();
     auto qid = item->data(0, NOTEBOOK_ROLE_ID).toString().toStdString();
-    m_ptrBank->updateQuestion(gid, qid, getString(qd.getQuestion()), getString(qd.getAnswer()));
+    if (!m_ptrBank->updateQuestion(gid, qid, getString(qd.getQuestion()), getString(qd.getAnswer())))
+    {
+        QMessageBox::critical(this, QStringLiteral("警告"), QStringLiteral("修改问题失败：%1！").arg(m_ptrBank->err()));
+        return;
+    }
+
+    item->setText(0, qd.getQuestion());
+    item->setToolTip(0, qd.getQuestion());
+    item->setData(0, NOTEBOOK_ROLE_ANSWER, qd.getAnswer());
+
 }
 
 void notebook::onTreeWidgetItemClicked(QTreeWidgetItem * item, int col)
@@ -277,10 +314,9 @@ void notebook::onTreeWidgetItemClicked(QTreeWidgetItem * item, int col)
         if (!val.toBool())
             ui.m_edtQuestion->setText(item->text(0));
         else
-        {
             ui.m_edtQuestion->clear();
-            ui.m_edtAnswer->clear();
-        }
+        ui.m_edtAnswer->clear();
+
         return;
     }
 
@@ -288,8 +324,10 @@ void notebook::onTreeWidgetItemClicked(QTreeWidgetItem * item, int col)
         return;
 
     QList<QAction *> actions = m_ptrMenu->actions();
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 5; i++)
         actions[i]->setVisible(val.toBool());
+    actions[5]->setVisible(!val.toBool());
+    actions[6]->setVisible(!val.toBool());
 
     m_ptrMenu->exec(QCursor::pos());
 }
@@ -335,6 +373,7 @@ void notebook::initQuestionTree(QTreeWidgetItem * parent_item, const CQuestionGr
     for (const auto & grp : qgp->m_vecGroups)
     {
         QTreeWidgetItem * child = new QTreeWidgetItem(parent_item);
+        child->setIcon(0, QIcon(":/notebook/res/group.ico"));
         child->setText(0, QString::fromStdString(grp.m_strName));
         child->setToolTip(0, QString::fromStdString(grp.m_strName));
         child->setData(0, Qt::UserRole, QVariant::fromValue(true));
@@ -350,6 +389,7 @@ void notebook::initQuestionTree(QTreeWidgetItem * parent_item, const CQuestionGr
         for (const auto & qap : qaps)
         {
             QTreeWidgetItem * child = new QTreeWidgetItem(parent_item);
+            child->setIcon(0, QIcon(":/notebook/res/question.ico"));
             child->setText(0, QString::fromStdString(qap.m_strQuestion));
             child->setToolTip(0, QString::fromStdString(qap.m_strQuestion));
             child->setData(0, Qt::UserRole, QVariant::fromValue(false));
@@ -358,6 +398,55 @@ void notebook::initQuestionTree(QTreeWidgetItem * parent_item, const CQuestionGr
             parent_item->setExpanded(true);
         }
     }
+}
+
+QTreeWidgetItem * notebook::findTreeWidgetItem(QTreeWidgetItem * item, bool flag)
+{
+    if (nullptr == item)
+        return nullptr;
+
+    int val = flag ? -1 : 1;
+    QTreeWidgetItem * cur_item = item;
+
+    while (cur_item)
+    {
+        // 获取父节点
+        auto * parent_item = cur_item->parent();
+        if (nullptr == parent_item)
+            return nullptr;
+
+        // 如果超出当前分组范围取上一级
+        auto index = parent_item->indexOfChild(cur_item) + val;
+        if (index < 0 || index >= parent_item->childCount())
+        {
+            cur_item = parent_item;
+            val = flag ? -1 : 1;
+            continue;
+        }
+
+        // 新的节点为问题节点直接返回
+        cur_item = parent_item->child(index);
+        auto is_group = cur_item->data(0, Qt::UserRole);
+        if (!is_group.toBool())
+        {
+            ui.m_treeQuestionBank->setCurrentItem(cur_item);
+            return cur_item;
+        }
+
+        if (cur_item->childCount() > 0)
+        {
+            cur_item = cur_item->child(flag ? cur_item->childCount() - 1 : 0);
+            is_group = cur_item->data(0, Qt::UserRole);
+            if (!is_group.toBool())
+            {
+                ui.m_treeQuestionBank->setCurrentItem(cur_item);
+                return cur_item;
+            }
+            val = 0;
+        }
+    }
+
+    return nullptr;
 }
 
 std::string notebook::uid()
