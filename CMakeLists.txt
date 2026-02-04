@@ -62,14 +62,15 @@ target_link_directories(${PROJECT_NAME}
     dep/lib/${CMAKE_BUILD_TYPE}
 )
 
-
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
         Qt${QT_VERSION_MAJOR}::Core
         Qt${QT_VERSION_MAJOR}::Gui
         Qt${QT_VERSION_MAJOR}::Widgets
         abseil_dll
-        libprotobufd
-        libprotobuf-lited
+        $<$<CONFIG:Debug>:libprotobufd>
+        $<$<CONFIG:Release>:libprotobuf>
+        $<$<CONFIG:Debug>:libprotobuf-lited>
+        $<$<CONFIG:Release>:libprotobuf-lite>
 )
 
