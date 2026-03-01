@@ -246,6 +246,10 @@ void notebook::onBtnClickedAddQuestion()
     child->setData(0, Qt::UserRole, QVariant::fromValue(false));
     child->setData(0, NOTEBOOK_ROLE_ID, QVariant::fromValue(QString::fromStdString(id)));
     child->setData(0, NOTEBOOK_ROLE_ANSWER, QVariant::fromValue(qd.getAnswer()));
+    if (qd.getAnswer().isEmpty())
+        child->setData(0, Qt::ForegroundRole, QBrush(Qt::red));
+    else
+        child->setData(0, Qt::ForegroundRole, QBrush(Qt::black));
     item->setExpanded(true);
 }
 
@@ -297,7 +301,10 @@ void notebook::onBtnClickedModifyQuestion()
     item->setText(0, qd.getQuestion());
     item->setToolTip(0, qd.getQuestion());
     item->setData(0, NOTEBOOK_ROLE_ANSWER, qd.getAnswer());
-
+    if (qd.getAnswer().isEmpty())
+        item->setData(0, Qt::ForegroundRole, QBrush(Qt::red));
+    else
+        item->setData(0, Qt::ForegroundRole, QBrush(Qt::black));
 }
 
 void notebook::onTreeWidgetItemClicked(QTreeWidgetItem * item, int col)
@@ -392,6 +399,8 @@ void notebook::initQuestionTree(QTreeWidgetItem * parent_item, const CQuestionGr
             child->setIcon(0, QIcon(":/notebook/res/question.ico"));
             child->setText(0, QString::fromStdString(qap.m_strQuestion));
             child->setToolTip(0, QString::fromStdString(qap.m_strQuestion));
+            if (qap.m_strAnswer.empty())
+                child->setData(0, Qt::ForegroundRole, QBrush(Qt::red));
             child->setData(0, Qt::UserRole, QVariant::fromValue(false));
             child->setData(0, NOTEBOOK_ROLE_ID, QVariant::fromValue(QString::fromStdString(qap.m_strId)));
             child->setData(0, NOTEBOOK_ROLE_ANSWER, QVariant::fromValue(QString::fromStdString(qap.m_strAnswer)));
