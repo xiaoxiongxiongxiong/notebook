@@ -16,6 +16,7 @@ find_package(Qt${QT_VERSION_MAJOR}
         Core
         Gui
         Widgets
+        Network
 )
 qt_standard_project_setup()
 
@@ -30,6 +31,8 @@ set(PROJECT_UI_SOURCES
     ui/question_dashboard.ui
     ui/question_dashboard.h
     ui/question_dashboard.cpp
+    ui/qwenclient.h
+    ui/qwenclient.cpp
 )
 
 set(PROJECT_SOURCES
@@ -67,6 +70,7 @@ target_link_libraries(${PROJECT_NAME}
         Qt${QT_VERSION_MAJOR}::Core
         Qt${QT_VERSION_MAJOR}::Gui
         Qt${QT_VERSION_MAJOR}::Widgets
+        Qt${QT_VERSION_MAJOR}::Network
         abseil_dll
         $<$<CONFIG:Debug>:libprotobufd>
         $<$<CONFIG:Release>:libprotobuf>
