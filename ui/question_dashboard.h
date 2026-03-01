@@ -3,6 +3,8 @@
 #include <QDialog>
 #include "ui_question_dashboard.h"
 
+class QwenClient;
+
 class question_dashboard : public QDialog
 {
     Q_OBJECT
@@ -26,8 +28,14 @@ public slots:
     void onBtnClickedConfirm();
     // 取消
     void onBtnClickedCancel();
+    void onBtnClickedAnswer();
+    void onRecvAnswer(const QString & answer);
+    void onRecvError(const QString & error);
 
 private:
     Ui::question_dashboardClass ui;
+
+    QwenClient * m_qwenClient = nullptr;
+    QString m_apiKey = "myapikey";
 };
 
