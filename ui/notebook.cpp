@@ -352,7 +352,10 @@ bool notebook::initQuestionBank()
         return false;
     }
 
-    if (!m_ptrBank->init(getString(strPath)))
+    auto tmp = strPath.toLocal8Bit();
+    std::string path;
+    path.assign(tmp.constData(), tmp.length());
+    if (!m_ptrBank->init(path))
     {
         QMessageBox::critical(this, QStringLiteral("警告"), QStringLiteral("初始化题库失败！"));
         delete m_ptrBank;
