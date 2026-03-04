@@ -295,12 +295,12 @@ CQuestionAnswerImpl * CQuestionBankImpl::findQustionAnswerContext(CQuestionGroup
             auto impl = std::make_shared<CQuestionAnswerImpl>();
             if (!impl)
             {
-                return false;
+                return nullptr;
             }
             if (!impl->open(path))
             {
                 impl.reset();
-                return false;
+                return nullptr;
             }
 
             qgp.m_vecQuestions.emplace_back(impl);
