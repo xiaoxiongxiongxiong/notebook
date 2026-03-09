@@ -12,13 +12,14 @@ bool CQuestionAnswerImpl::open(const std::string & path, const bool & flag)
 		return false;
 	}
 
-    if (!std::filesystem::exists(path))
+    auto tmp = std::filesystem::u8path(path);
+    if (!std::filesystem::exists(tmp))
     {
         m_strPath = path;
         return true;
     }
 
-	std::ifstream ifs(path, std::ios::binary);
+	std::ifstream ifs(tmp, std::ios::binary);
 	if (!flag && !m_lstGroups.ParseFromIstream(&ifs))
 	{
 		notebook_format_string(m_strErrorMsg, "Parse %s failed", path.c_str());
@@ -42,13 +43,14 @@ bool CQuestionAnswerImpl::open(const std::string & path, const bool & flag)
 
 void CQuestionAnswerImpl::close()
 {
+    auto tmp = std::filesystem::u8path(m_strPath);
     if (m_lstGroups.items().empty() && m_lstQuestions.items().empty())
     {
-        std::filesystem::remove(m_strPath);
+        std::filesystem::remove(tmp);
         return;
     }
 
-    std::ofstream ofs(m_strPath, std::ios::binary | std::ios::out);
+    std::ofstream ofs(tmp, std::ios::binary | std::ios::out);
     if (m_lstGroups.items_size() > 0)
         m_lstGroups.SerializeToOstream(&ofs);
     if (m_lstQuestions.items_size() > 0)

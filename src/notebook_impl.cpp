@@ -6,13 +6,14 @@
 
 bool CQuestionBankImpl::init(const std::string & path)
 {
-    if (!std::filesystem::exists(path) && !std::filesystem::create_directory(path))
+    auto tmp = std::filesystem::u8path(path);
+    if (!std::filesystem::exists(tmp) && !std::filesystem::create_directory(tmp))
     {
         notebook_format_string(m_strErrorMsg, "Create directory '%s' failed", path.c_str());
         return false;
     }
 
-    m_strIdPath = path + "\\ids.dat";
+    m_strIdPath = (tmp / "ids.dat").u8string();
     m_ptrIds = std::make_shared<CQuestionAnswerImpl>();
     if (!m_ptrIds->open(m_strIdPath, false))
     {
@@ -31,23 +32,23 @@ bool CQuestionBankImpl::init(const std::string & path)
         return false;
     }
 
-    std::filesystem::path root_path = path;
-    auto root_name = root_path.filename().string();
+    std::filesystem::path root_path = tmp;
+    auto root_name = root_path.filename().u8string();
     m_clsQuestionBank.m_strName = root_name;
     m_clsQuestionBank.m_strPath = path;
 
     try 
     {
-        for (const auto & entry : std::filesystem::recursive_directory_iterator(path))
+        for (const auto & entry : std::filesystem::recursive_directory_iterator(tmp))
         {
-            auto parent_name = entry.path().parent_path().filename().string();
-            auto cur_name = entry.path().filename().string();
+            auto parent_name = entry.path().parent_path().filename().u8string();
+            auto cur_name = entry.path().filename().u8string();
             if (entry.is_regular_file())
             {
                 if ("ids.dat" == cur_name)
                     continue;
 
-                if (!initQuestionBank(parent_name, m_clsQuestionBank, entry.path().string(), cur_name, true))
+                if (!initQuestionBank(parent_name, m_clsQuestionBank, entry.path().u8string(), cur_name, true))
                 {
                     return false;
                 }
@@ -57,7 +58,7 @@ bool CQuestionBankImpl::init(const std::string & path)
                 if (parent_name == root_name)
                 {
                     CQuestionGroupParam qgp;
-                    qgp.m_strPath = entry.path().string();
+                    qgp.m_strPath = entry.path().u8string();
                     qgp.m_strName = cur_name;
                     for (const auto & kv : m_mapIds)
                     {
@@ -70,7 +71,7 @@ bool CQuestionBankImpl::init(const std::string & path)
                     continue;
                 }
 
-                if (!initQuestionBank(parent_name, m_clsQuestionBank, entry.path().string(), cur_name, false))
+                if (!initQuestionBank(parent_name, m_clsQuestionBank, entry.path().u8string(), cur_name, false))
                 {
                     return false;
                 }
@@ -331,7 +332,8 @@ bool CQuestionBankImpl::addGroup(const std::string & id, const std::string & nam
     grp.m_strPath = qgp.m_strPath + "\\" + name;
     qgp.m_vecGroups.emplace_back(grp);
 
-    if (!std::filesystem::exists(grp.m_strPath) && !std::filesystem::create_directory(grp.m_strPath))
+    auto tmp = std::filesystem::u8path(grp.m_strPath);
+    if (!std::filesystem::exists(tmp) && !std::filesystem::create_directory(tmp))
     {
         notebook_format_string(m_strErrorMsg, "Create directory '%s' failed", qgp.m_strPath.c_str());
         return false;
@@ -369,9 +371,10 @@ bool CQuestionBankImpl::deleteGroup(const std::string & id, CQuestionGroupParam 
 
     try
     {
-        if (std::filesystem::exists((*found).m_strPath) && std::filesystem::is_directory((*found).m_strPath))
+        auto tmp = std::filesystem::u8path((*found).m_strPath);
+        if (std::filesystem::exists(tmp) && std::filesystem::is_directory(tmp))
         {
-            std::filesystem::remove_all((*found).m_strPath); // 递归删除整个目录树
+            std::filesystem::remove_all(tmp); // 递归删除整个目录树
         }
     }
     catch (const std::filesystem::filesystem_error & e)
@@ -405,7 +408,9 @@ bool CQuestionBankImpl::updateGroup(const std::string & id, const std::string & 
 
     try
     {
-        std::filesystem::rename((*found).m_strPath, path);
+        auto src = std::filesystem::u8path((*found).m_strPath);
+        auto dst = std::filesystem::u8path(path);
+        std::filesystem::rename(src, dst);
     }
     catch (const std::filesystem::filesystem_error & e)
     {

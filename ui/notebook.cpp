@@ -102,7 +102,6 @@ void notebook::onBtnClickedLastQuestion()
 
     ui.m_edtQuestion->setText(item->text(0));
     ui.m_edtAnswer->clear();
-
 }
 
 void notebook::onBtnClickedNextQuestion()
@@ -352,10 +351,7 @@ bool notebook::initQuestionBank()
         return false;
     }
 
-    auto tmp = strPath.toLocal8Bit();
-    std::string path;
-    path.assign(tmp.constData(), tmp.length());
-    if (!m_ptrBank->init(path))
+    if (!m_ptrBank->init(strPath.toStdString()))
     {
         QMessageBox::critical(this, QStringLiteral("警告"), QStringLiteral("初始化题库失败！"));
         delete m_ptrBank;
